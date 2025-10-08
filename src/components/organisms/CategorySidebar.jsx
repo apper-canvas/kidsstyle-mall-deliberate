@@ -28,22 +28,24 @@ useEffect(() => {
     const counts = {};
     const subcategoryCounts = {};
     
-    products.forEach((product) => {
-      const category = product.category;
-      counts[category] = (counts[category] || 0) + 1;
-      
-      if (product.subcategory) {
-        const subKey = `${category}-${product.subcategory}`;
-        subcategoryCounts[subKey] = (subcategoryCounts[subKey] || 0) + 1;
-      }
-    });
+    if (products && Array.isArray(products)) {
+      products.forEach((product) => {
+        const category = product.category;
+        counts[category] = (counts[category] || 0) + 1;
+        
+        if (product.subcategory) {
+          const subKey = `${category}-${product.subcategory}`;
+          subcategoryCounts[subKey] = (subcategoryCounts[subKey] || 0) + 1;
+        }
+      });
+    }
     
     setCategoryCounts({ ...counts, ...subcategoryCounts });
   }, [products]);
 
 const getCategoryCount = (categoryName, subcategory = null) => {
     if (categoryName === "All Products") {
-      return products.length;
+      return products?.length || 0;
     }
     
     if (subcategory) {
