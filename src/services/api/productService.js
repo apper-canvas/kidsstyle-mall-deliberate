@@ -2,9 +2,22 @@ import productsData from "@/services/mockData/products.json";
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const getSizeRecommendation = (product) => {
+  if (product.category !== "Kids Clothing") return undefined;
+  
+  // Return size recommendation from product data if available
+  if (product.sizeRecommendation) {
+    return product.sizeRecommendation;
+  }
+  
+  // Default recommendation if not specified
+  return "Fits true to size";
+};
+
 const enhanceProductData = (product) => {
   const baseImage = product.image;
   const category = product.category;
+  const sizeRecommendation = getSizeRecommendation(product);
   
   const enhancedProduct = {
     ...product,
@@ -16,6 +29,7 @@ const enhanceProductData = (product) => {
     ],
     fullDescription: `${product.description} This high-quality ${category.toLowerCase()} item is perfect for kids and families. Made with care and attention to detail, it offers great value and lasting durability. Ideal for everyday use or special occasions, this product combines style, comfort, and functionality in one package.`,
     sizes: category === "Kids Clothing" ? ["XS", "S", "M", "L", "XL"] : undefined,
+    sizeRecommendation: sizeRecommendation,
     ageRange: product.subcategory 
       ? product.subcategory 
       : category === "Toys" 

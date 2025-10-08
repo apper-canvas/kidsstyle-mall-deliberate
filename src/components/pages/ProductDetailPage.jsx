@@ -9,6 +9,7 @@ import Error from "@/components/ui/Error";
 import Loading from "@/components/ui/Loading";
 import Badge from "@/components/atoms/Badge";
 import Button from "@/components/atoms/Button";
+import SizeGuideModal from "@/components/atoms/SizeGuideModal";
 import { cn } from "@/utils/cn";
 import productService from "@/services/api/productService";
 
@@ -22,7 +23,7 @@ function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
-
+const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   useEffect(() => {
     loadProduct();
 }, [id]);
@@ -228,12 +229,19 @@ function ProductDetailPage() {
                 </p>
               </div>
 
-              {/* Size Selection (for Clothing) */}
-              {product.category === "Clothing" && product.sizes && (
+{/* Size Selection (for Clothing) */}
+              {product.category === "Kids Clothing" && product.sizes && (
                 <div>
-                  <h3 className="font-display font-semibold text-lg text-gray-800 mb-3">
-                    Select Size
-                  </h3>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-display font-semibold text-lg text-gray-800">
+                      Select Size
+                    </h3>
+                    {product.sizeRecommendation && (
+                      <Badge variant="secondary" className="text-xs">
+                        {product.sizeRecommendation}
+                      </Badge>
+                    )}
+                  </div>
                   <div className="flex flex-wrap gap-3">
                     {product.sizes.map((size) => (
                       <button
@@ -250,6 +258,13 @@ function ProductDetailPage() {
                       </button>
                     ))}
                   </div>
+                  <button
+                    onClick={() => setIsSizeGuideOpen(true)}
+                    className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors mt-3 text-sm font-semibold"
+                  >
+                    <ApperIcon name="Ruler" size={16} />
+                    <span>View Size Guide</span>
+                  </button>
                 </div>
               )}
 
@@ -355,6 +370,13 @@ function ProductDetailPage() {
             </div>
           </div>
 </motion.div>
+
+      {/* Size Guide Modal */}
+      <SizeGuideModal 
+        isOpen={isSizeGuideOpen}
+        onClose={() => setIsSizeGuideOpen(false)}
+        category={product?.category}
+      />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <RecentlyViewed 
