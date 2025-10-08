@@ -32,11 +32,28 @@ const ProductCard = ({ product, onAddToCart }) => {
               SALE
             </div>
           )}
-          {!product.inStock && (
-            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-              <span className="bg-error text-white px-4 py-2 rounded-lg font-semibold">
-                Out of Stock
-              </span>
+{product.stockStatus === 'out-of-stock' && (
+            <div className="absolute top-2 left-2">
+              <div className="flex items-center gap-1 bg-error text-white px-3 py-1.5 rounded-lg font-semibold text-sm shadow-md">
+                <ApperIcon name="XCircle" size={16} />
+                <span>Out of Stock</span>
+              </div>
+            </div>
+          )}
+          {product.stockStatus === 'low-stock' && (
+            <div className="absolute top-2 left-2">
+              <div className="flex items-center gap-1 bg-warning text-white px-3 py-1.5 rounded-lg font-semibold text-sm shadow-md">
+                <ApperIcon name="AlertTriangle" size={16} />
+                <span>Low Stock</span>
+              </div>
+            </div>
+          )}
+          {product.stockStatus === 'in-stock' && (
+            <div className="absolute top-2 left-2">
+              <div className="flex items-center gap-1 bg-success text-white px-3 py-1.5 rounded-lg font-semibold text-sm shadow-md">
+                <ApperIcon name="CheckCircle" size={16} />
+                <span>In Stock</span>
+              </div>
             </div>
           )}
         </div>

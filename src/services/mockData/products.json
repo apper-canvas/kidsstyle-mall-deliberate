@@ -9,7 +9,15 @@
     "subcategory": "Kids (4-8)",
     "description": "Bright and colorful striped t-shirt perfect for everyday wear",
     "sizeRecommendation": "Fits true to size",
-    "inStock": true
+    "inStock": true,
+    "stockLevel": 3,
+    "sizeStock": {
+      "XS": 0,
+      "S": 1,
+      "M": 2,
+      "L": 0,
+      "XL": 0
+    }
   },
 {
     "Id": 2,
@@ -21,7 +29,15 @@
     "category": "Kids Clothing",
     "subcategory": "Toddler (2-4)",
     "description": "Classic denim overalls with adjustable straps",
-    "inStock": true
+    "inStock": true,
+    "stockLevel": 15,
+    "sizeStock": {
+      "XS": 3,
+      "S": 4,
+      "M": 5,
+      "L": 2,
+      "XL": 1
+    }
   },
 {
     "Id": 3,
@@ -32,7 +48,15 @@
     "subcategory": "Baby (0-2)",
     "description": "Beautiful floral pattern dress for special occasions",
     "sizeRecommendation": "Runs large - true to age sizing",
-    "inStock": true
+    "inStock": true,
+    "stockLevel": 25,
+    "sizeStock": {
+      "XS": 6,
+      "S": 7,
+      "M": 6,
+      "L": 4,
+      "XL": 2
+    }
   },
 {
     "Id": 4,
@@ -42,25 +66,28 @@
     "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop",
     "category": "Accessories",
     "description": "Durable backpack with multiple compartments",
-    "inStock": true
+    "inStock": true,
+    "stockLevel": 0
   },
-  {
+{
     "Id": 5,
     "title": "Kids Sunglasses Set",
     "price": 12.99,
     "image": "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=400&fit=crop",
     "category": "Accessories",
     "description": "UV protection sunglasses in fun colors",
-    "inStock": true
+    "inStock": true,
+    "stockLevel": 30
   },
-  {
+{
     "Id": 6,
     "title": "Hair Accessories Bundle",
     "price": 9.99,
     "image": "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop",
     "category": "Accessories",
     "description": "Set of colorful bows and hair clips",
-    "inStock": true
+    "inStock": true,
+    "stockLevel": 18
   },
 {
     "Id": 7,
@@ -70,25 +97,28 @@
     "image": "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=400&h=400&fit=crop",
     "category": "Toys",
     "description": "Creative building blocks for imaginative play",
-    "inStock": true
+    "inStock": true,
+    "stockLevel": 4
   },
-  {
+{
     "Id": 8,
     "title": "Stuffed Animal Bear",
     "price": 16.99,
     "image": "https://images.unsplash.com/photo-1530325553241-4f6e7690cf36?w=400&h=400&fit=crop",
     "category": "Toys",
     "description": "Soft and cuddly teddy bear friend",
-    "inStock": true
+    "inStock": true,
+    "stockLevel": 12
   },
-  {
+{
     "Id": 9,
     "title": "Art Supply Kit",
     "price": 22.99,
     "image": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&h=400&fit=crop",
     "category": "Toys",
     "description": "Complete set of crayons, markers, and paper",
-    "inStock": true
+    "inStock": true,
+    "stockLevel": 22
   },
 {
     "Id": 10,
@@ -98,25 +128,28 @@
     "image": "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=400&h=400&fit=crop",
     "category": "Home Goods",
     "description": "Colorful bedding set with pillowcase",
-    "inStock": true
+    "inStock": true,
+    "stockLevel": 2
   },
-  {
+{
     "Id": 11,
     "title": "Wall Growth Chart",
     "price": 15.99,
     "image": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=400&fit=crop",
     "category": "Home Goods",
     "description": "Decorative height measurement chart",
-    "inStock": true
+    "inStock": true,
+    "stockLevel": 35
   },
-  {
+{
     "Id": 12,
     "title": "Night Light Projector",
     "price": 18.99,
     "image": "https://images.unsplash.com/photo-1548048026-5a1a941d93d3?w=400&h=400&fit=crop",
     "category": "Home Goods",
     "description": "Soothing star projector for bedtime",
-    "inStock": true
+    "inStock": true,
+    "stockLevel": 8
   },
 {
     "Id": 13,
@@ -126,24 +159,27 @@
     "image": "https://images.unsplash.com/photo-1590739225014-b7e29e92a56c?w=400&h=400&fit=crop",
     "category": "Mom & Dad",
     "description": "Stylish and functional diaper bag with multiple pockets",
-    "inStock": true
+    "inStock": true,
+    "stockLevel": 0
   },
-  {
+{
     "Id": 14,
     "title": "Dad Baseball Cap",
     "price": 17.99,
     "image": "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400&h=400&fit=crop",
     "category": "Mom & Dad",
     "description": "Comfortable adjustable baseball cap",
-    "inStock": true
+    "inStock": true,
+    "stockLevel": 20
   },
-  {
+{
     "Id": 15,
     "title": "Family Water Bottles",
     "price": 26.99,
     "image": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400&h=400&fit=crop",
     "category": "Mom & Dad",
     "description": "Set of 4 reusable water bottles for the whole family",
-    "inStock": true
+    "inStock": true,
+    "stockLevel": 50
   }
 ]

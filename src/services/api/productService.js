@@ -15,9 +15,18 @@ const getSizeRecommendation = (product) => {
 };
 
 const enhanceProductData = (product) => {
-  const baseImage = product.image;
+const baseImage = product.image;
   const category = product.category;
   const sizeRecommendation = getSizeRecommendation(product);
+  
+  // Calculate stock status
+  const stockLevel = product.stockLevel || 0;
+  let stockStatus = 'out-of-stock';
+  if (stockLevel > 5) {
+    stockStatus = 'in-stock';
+  } else if (stockLevel > 0) {
+    stockStatus = 'low-stock';
+  }
   
   const enhancedProduct = {
 ...product,
@@ -38,7 +47,10 @@ const enhanceProductData = (product) => {
         : category === "Kids Clothing" 
           ? "2-12 years" 
           : "All ages",
-    subcategory: product.subcategory
+    subcategory: product.subcategory,
+    stockLevel: stockLevel,
+    stockStatus: stockStatus,
+    sizeStock: product.sizeStock
   };
   
   return enhancedProduct;

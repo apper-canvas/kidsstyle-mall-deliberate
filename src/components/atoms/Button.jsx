@@ -17,11 +17,12 @@ const Button = forwardRef(
     },
     ref
   ) => {
-    const variants = {
+const variants = {
       primary: "bg-primary text-white hover:brightness-110 active:scale-95",
       secondary: "bg-secondary text-white hover:brightness-110 active:scale-95",
       outline: "border-2 border-primary text-primary hover:bg-primary hover:text-white",
-      ghost: "text-primary hover:bg-primary/10"
+      ghost: "text-primary hover:bg-primary/10",
+      warning: "bg-warning text-white hover:brightness-110 active:scale-95"
     };
 
     const sizes = {

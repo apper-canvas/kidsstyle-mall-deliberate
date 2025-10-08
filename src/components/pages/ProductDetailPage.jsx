@@ -16,7 +16,7 @@ import productService from "@/services/api/productService";
 function ProductDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [product, setProduct] = useState(null);
+const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 const [selectedImage, setSelectedImage] = useState(0);
@@ -25,7 +25,6 @@ const [selectedImage, setSelectedImage] = useState(0);
   const [isAdded, setIsAdded] = useState(false);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
-  
   useEffect(() => {
     loadProduct();
 }, [id]);
@@ -46,9 +45,14 @@ const [selectedImage, setSelectedImage] = useState(0);
       if (!data) {
         setError("Product not found");
       } else {
-        setProduct(data);
+setProduct(data);
         if (data.sizes && data.sizes.length > 0) {
-          setSelectedSize(data.sizes[0]);
+          // Set first available (in-stock) size as default
+          const firstAvailableSize = data.sizes.find(size => {
+            const sizeStock = data.sizeStock?.[size] || 0;
+            return sizeStock > 0;
+          });
+          setSelectedSize(firstAvailableSize || data.sizes[0]);
         }
       }
     } catch (err) {
@@ -62,12 +66,36 @@ const [selectedImage, setSelectedImage] = useState(0);
 
   const { addToCart } = useCart();
 
-  function handleAddToCart() {
-    if (!product.inStock) return;
-    
-    if (product.category === "Clothing" && !selectedSize) {
-      toast.error("Please select a size");
+function handleAddToCart() {
+    // Check if product is out of stock
+    if (product.stockStatus === 'out-of-stock') {
+      toast.error("This item is currently out of stock");
       return;
+    }
+    
+    // For clothing items, validate size selection and stock
+    if (product.category === "Kids Clothing") {
+      if (!selectedSize) {
+        toast.error("Please select a size");
+        return;
+      }
+      
+      const sizeStock = product.sizeStock?.[selectedSize] || 0;
+      if (sizeStock === 0) {
+        toast.error(`Size ${selectedSize} is out of stock`);
+        return;
+      }
+      
+      if (quantity > sizeStock) {
+        toast.error(`Only ${sizeStock} items available in size ${selectedSize}`);
+        return;
+      }
+    } else {
+      // For non-clothing items, check general stock
+      if (quantity > product.stockLevel) {
+        toast.error(`Only ${product.stockLevel} items available`);
+        return;
+      }
     }
 
     addToCart({
@@ -75,7 +103,8 @@ const [selectedImage, setSelectedImage] = useState(0);
       title: product.title,
       price: product.price,
       image: product.image,
-      quantity: quantity
+      quantity: quantity,
+      size: selectedSize || undefined
     });
 
     setIsAdded(true);
@@ -85,8 +114,18 @@ const [selectedImage, setSelectedImage] = useState(0);
   }
 
   function handleQuantityChange(change) {
-    const newQuantity = quantity + change;
-    if (newQuantity >= 1 && newQuantity <= 10) {
+const newQuantity = quantity + change;
+    
+    // Determine max quantity based on product type and stock
+    let maxQuantity = 10; // default max
+    if (product.category === "Kids Clothing" && selectedSize) {
+      const sizeStock = product.sizeStock?.[selectedSize] || 0;
+      maxQuantity = Math.min(sizeStock, 10);
+    } else {
+      maxQuantity = Math.min(product.stockLevel || 0, 10);
+    }
+    
+    if (newQuantity >= 1 && newQuantity <= maxQuantity) {
       setQuantity(newQuantity);
     }
   }
@@ -215,18 +254,27 @@ const [selectedImage, setSelectedImage] = useState(0);
             {/* Product Information */}
             <div className="space-y-6">
               {/* Title and Category */}
-              <div>
+<div>
                 <div className="flex items-center gap-2 mb-2">
                   <Badge className="bg-secondary/10 text-secondary border-secondary/20">
                     {product.category}
                   </Badge>
-                  {product.inStock ? (
-                    <Badge className="bg-success/10 text-success border-success/20">
-                      In Stock
+                  {product.stockStatus === 'in-stock' && (
+                    <Badge className="bg-success/10 text-success border-success/20 flex items-center gap-1">
+                      <ApperIcon name="CheckCircle" size={14} />
+                      <span>In Stock ({product.stockLevel} left)</span>
                     </Badge>
-                  ) : (
-                    <Badge className="bg-error/10 text-error border-error/20">
-                      Out of Stock
+                  )}
+                  {product.stockStatus === 'low-stock' && (
+                    <Badge className="bg-warning/10 text-warning border-warning/20 flex items-center gap-1">
+                      <ApperIcon name="AlertTriangle" size={14} />
+                      <span>Low Stock ({product.stockLevel} left)</span>
+                    </Badge>
+                  )}
+                  {product.stockStatus === 'out-of-stock' && (
+                    <Badge className="bg-error/10 text-error border-error/20 flex items-center gap-1">
+                      <ApperIcon name="XCircle" size={14} />
+                      <span>Out of Stock</span>
                     </Badge>
                   )}
                 </div>
@@ -261,7 +309,7 @@ const [selectedImage, setSelectedImage] = useState(0);
               </div>
 
 {/* Size Selection (for Clothing) */}
-              {product.category === "Kids Clothing" && product.sizes && (
+{product.category === "Kids Clothing" && product.sizes && (
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="font-display font-semibold text-lg text-gray-800">
@@ -274,20 +322,43 @@ const [selectedImage, setSelectedImage] = useState(0);
                     )}
                   </div>
                   <div className="flex flex-wrap gap-3">
-                    {product.sizes.map((size) => (
-                      <button
-                        key={size}
-                        onClick={() => setSelectedSize(size)}
-                        className={cn(
-                          "px-6 py-3 rounded-lg font-semibold transition-all duration-200 min-w-[80px]",
-                          selectedSize === size
-                            ? "bg-primary text-white shadow-md scale-105"
-                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                        )}
-                      >
-                        {size}
-                      </button>
-                    ))}
+                    {product.sizes.map((size) => {
+                      const sizeStock = product.sizeStock?.[size] || 0;
+                      const isOutOfStock = sizeStock === 0;
+                      const isLowStock = sizeStock > 0 && sizeStock <= 5;
+                      
+                      return (
+                        <button
+                          key={size}
+                          onClick={() => !isOutOfStock && setSelectedSize(size)}
+                          disabled={isOutOfStock}
+                          className={cn(
+                            "px-6 py-3 rounded-lg font-semibold transition-all duration-200 min-w-[80px] relative",
+                            selectedSize === size && !isOutOfStock
+                              ? "bg-primary text-white shadow-md scale-105"
+                              : isOutOfStock
+                              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                          )}
+                          title={isOutOfStock ? "Out of stock" : `${sizeStock} available`}
+                        >
+                          <div className="flex flex-col items-center">
+                            <span>{size}</span>
+                            {!isOutOfStock && (
+                              <span className={cn(
+                                "text-xs mt-1",
+                                selectedSize === size ? "text-white/80" : isLowStock ? "text-warning" : "text-gray-500"
+                              )}>
+                                {sizeStock} left
+                              </span>
+                            )}
+                            {isOutOfStock && (
+                              <span className="text-xs mt-1">Out</span>
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                   <button
                     onClick={() => setIsSizeGuideOpen(true)}
@@ -300,14 +371,14 @@ const [selectedImage, setSelectedImage] = useState(0);
               )}
 
               {/* Quantity Selector */}
-              <div>
+<div>
                 <h3 className="font-display font-semibold text-lg text-gray-800 mb-3">
                   Quantity
                 </h3>
                 <div className="flex items-center gap-4">
                   <button
                     onClick={() => handleQuantityChange(-1)}
-                    disabled={quantity <= 1}
+                    disabled={quantity <= 1 || product.stockStatus === 'out-of-stock'}
                     className="w-12 h-12 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
                   >
                     <ApperIcon name="Minus" size={20} />
@@ -317,7 +388,7 @@ const [selectedImage, setSelectedImage] = useState(0);
                   </span>
                   <button
                     onClick={() => handleQuantityChange(1)}
-                    disabled={quantity >= 10}
+                    disabled={product.stockStatus === 'out-of-stock'}
                     className="w-12 h-12 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
                   >
                     <ApperIcon name="Plus" size={20} />
@@ -326,19 +397,31 @@ const [selectedImage, setSelectedImage] = useState(0);
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                <Button
-                  onClick={handleAddToCart}
-                  disabled={!product.inStock || isAdded}
-                  size="lg"
-                  icon={isAdded ? "Check" : "ShoppingCart"}
-                  className={cn(
-                    "flex-1",
-                    isAdded && "bg-success hover:brightness-100"
-                  )}
-                >
-                  {isAdded ? "Added to Cart!" : "Add to Cart"}
-                </Button>
+<div className="flex flex-col sm:flex-row gap-3 pt-4">
+                {product.stockStatus === 'out-of-stock' ? (
+                  <Button
+                    onClick={() => toast.info("We'll notify you when this item is back in stock!")}
+                    size="lg"
+                    icon="Bell"
+                    variant="secondary"
+                    className="flex-1 bg-warning hover:brightness-110"
+                  >
+                    Notify When Available
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleAddToCart}
+                    disabled={isAdded}
+                    size="lg"
+                    icon={isAdded ? "Check" : "ShoppingCart"}
+                    className={cn(
+                      "flex-1",
+                      isAdded && "bg-success hover:brightness-100"
+                    )}
+                  >
+                    {isAdded ? "Added to Cart!" : "Add to Cart"}
+                  </Button>
+                )}
                 <Button
                   onClick={() => navigate("/")}
                   variant="outline"
