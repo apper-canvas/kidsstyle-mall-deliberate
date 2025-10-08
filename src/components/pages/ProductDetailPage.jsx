@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { useCart } from "@/App";
+import RecentlyViewed from "@/components/organisms/RecentlyViewed";
 import ApperIcon from "@/components/ApperIcon";
 import Error from "@/components/ui/Error";
 import Loading from "@/components/ui/Loading";
@@ -24,7 +25,15 @@ function ProductDetailPage() {
 
   useEffect(() => {
     loadProduct();
-  }, [id]);
+}, [id]);
+
+  const { trackProductView, recentlyViewed } = useCart();
+
+  useEffect(() => {
+    if (product) {
+      trackProductView(product.Id);
+    }
+  }, [product]);
 
   async function loadProduct() {
     try {
@@ -345,7 +354,14 @@ function ProductDetailPage() {
               </div>
             </div>
           </div>
-        </motion.div>
+</motion.div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <RecentlyViewed 
+            products={recentlyViewed.filter(p => p.Id !== product?.Id)} 
+            onAddToCart={addToCart}
+          />
+        </div>
       </div>
     </div>
   );

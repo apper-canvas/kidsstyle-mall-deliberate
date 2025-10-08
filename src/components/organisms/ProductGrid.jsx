@@ -2,7 +2,6 @@ import ProductCard from "@/components/molecules/ProductCard";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
-
 const ProductGrid = ({ products, loading, error, onAddToCart, onRetry }) => {
   if (loading) {
     return <Loading />;

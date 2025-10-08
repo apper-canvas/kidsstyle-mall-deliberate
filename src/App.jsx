@@ -1,6 +1,8 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import recentlyViewedService from "@/services/api/recentlyViewedService";
+import Error from "@/components/ui/Error";
 import ShopPage from "@/components/pages/ShopPage";
 import ProductDetailPage from "@/components/pages/ProductDetailPage";
 
@@ -15,15 +17,35 @@ export const useCart = () => {
 };
 
 function App() {
-  const [cartItems, setCartItems] = useState(() => {
+const [cartItems, setCartItems] = useState(() => {
     const saved = localStorage.getItem("cart");
     return saved ? JSON.parse(saved) : [];
   });
+
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
+  useEffect(() => {
+    loadRecentlyViewed();
+  }, []);
+
+  const loadRecentlyViewed = async () => {
+    const products = await recentlyViewedService.getAll();
+    setRecentlyViewed(products);
+  };
+
+  const trackProductView = (productId) => {
+    recentlyViewedService.trackView(productId);
+    loadRecentlyViewed();
+  };
+
+  const clearRecentlyViewed = () => {
+    recentlyViewedService.clear();
+    setRecentlyViewed([]);
+  };
   const addToCart = (product) => {
     setCartItems((prev) => {
       const existing = prev.find((item) => item.productId === product.productId);
@@ -54,7 +76,7 @@ function App() {
     setCartItems((prev) => prev.filter((item) => item.productId !== productId));
   };
 
-  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const cartValue = {
     cartItems,
@@ -62,9 +84,13 @@ function App() {
     updateQuantity,
     removeFromCart,
     totalItems,
+    recentlyViewed,
+    trackProductView,
+    clearRecentlyViewed
   };
-return (
-    <CartContext.Provider value={cartValue}>
+
+  return (
+<CartContext.Provider value={cartValue}>
       <BrowserRouter>
         <ToastContainer
           position="top-right"

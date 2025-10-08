@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import Header from "@/components/organisms/Header";
+import RecentlyViewed from "@/components/organisms/RecentlyViewed";
+import { useCart } from "@/App";
 import CategorySidebar from "@/components/organisms/CategorySidebar";
-import ProductGrid from "@/components/organisms/ProductGrid";
 import CartPanel from "@/components/organisms/CartPanel";
+import Header from "@/components/organisms/Header";
+import ProductGrid from "@/components/organisms/ProductGrid";
 import productService from "@/services/api/productService";
-
 function ShopPage() {
+  const { addToCart, recentlyViewed } = useCart();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -69,6 +71,12 @@ function ShopPage() {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
       />
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <RecentlyViewed 
+          products={recentlyViewed} 
+          onAddToCart={addToCart}
+        />
+      </div>
     </div>
   );
 }
