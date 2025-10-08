@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import CartItem from "@/components/molecules/CartItem";
@@ -7,8 +8,8 @@ import Empty from "@/components/ui/Empty";
 import { useCart } from "@/App";
 
 const CartPanel = ({ isOpen, onClose }) => {
-  const { cartItems, updateQuantity, removeFromCart } = useCart();
-  
+const { cartItems, updateQuantity, removeFromCart } = useCart();
+  const navigate = useNavigate();
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -86,7 +87,15 @@ const CartPanel = ({ isOpen, onClose }) => {
                     ${subtotal.toFixed(2)}
                   </span>
                 </div>
-                <Button fullWidth size="lg" icon="CreditCard">
+<Button 
+                  fullWidth 
+                  size="lg" 
+                  icon="CreditCard"
+                  onClick={() => {
+                    onClose();
+                    navigate('/checkout');
+                  }}
+                >
                   Proceed to Checkout
                 </Button>
                 <Button

@@ -5,7 +5,7 @@ import recentlyViewedService from "@/services/api/recentlyViewedService";
 import Error from "@/components/ui/Error";
 import ShopPage from "@/components/pages/ShopPage";
 import ProductDetailPage from "@/components/pages/ProductDetailPage";
-
+import CheckoutPage from "@/components/pages/CheckoutPage";
 const CartContext = createContext();
 
 export const useCart = () => {
@@ -103,9 +103,10 @@ const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
           draggable
           pauseOnHover
         />
-        <Routes>
+<Routes>
           <Route path="/" element={<ShopPage />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
         </Routes>
       </BrowserRouter>
     </CartContext.Provider>
