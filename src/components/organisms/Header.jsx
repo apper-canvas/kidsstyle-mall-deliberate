@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import categoryService from "@/services/api/categoryService";
 import { useCart } from "@/App";
 import ApperIcon from "@/components/ApperIcon";
 import SearchBar from "@/components/molecules/SearchBar";
+import Loading from "@/components/ui/Loading";
 import Badge from "@/components/atoms/Badge";
 
-// Categories array - matches CategorySidebar for consistency
-const categories = [
-  { id: "all", name: "All Products", icon: "Grid3x3" },
+const HARDCODED_CATEGORIES = [
   { id: "flash-sales", name: "Flash Sales", icon: "Flame" },
   { 
     id: "kids-clothing", 
@@ -25,12 +25,15 @@ const categories = [
   { id: "home-goods", name: "Home Goods", icon: "Home" },
   { id: "mom-dad", name: "Mom & Dad", icon: "Users" }
 ];
-const Header = ({ onSearch, onOpenCart }) => {
-  const { totalItems } = useCart();
+
+const Header = ({ onSearch, onOpenCart, categories, categoriesLoading }) => {
+const Header = ({ onSearch, onOpenCart, categories, categoriesLoading }) => {
+  const { cart } = useCart();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
-
+  
+  const totalItems = cart?.items?.reduce((sum, item) => sum + (item?.quantity || 0), 0) || 0;
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -74,14 +77,18 @@ return (
 
             {/* Dropdown Menu */}
             {isDropdownOpen && (
-              <div 
-                className="absolute top-full left-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
+<div 
+                className="absolute top-full left-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50"
                 onMouseLeave={() => setIsDropdownOpen(false)}
               >
-                <div className="py-2">
-                  {categories.map((category) => (
+                {categoriesLoading ? (
+                  <div className="px-4 py-3 text-center text-gray-500">Loading categories...</div>
+                ) : !categories || categories.length === 0 ? (
+                  <div className="px-4 py-3 text-center text-gray-500">No categories available</div>
+                ) : (
+                  categories.map((category) => (
                     <div key={category.id}>
-                      {category.subcategories ? (
+                      {category.subcategories && category.subcategories.length > 0 ? (
                         <div className="group relative">
                           <Link
                             to={`/?category=${category.id}`}
@@ -116,14 +123,13 @@ return (
                           <ApperIcon name={category.icon} size={20} className="text-primary" />
                           <span className="font-medium text-gray-700">{category.name}</span>
                         </Link>
-                      )}
+)}
                     </div>
-                  ))}
-                </div>
-              </div>
+                  ))
+                )}
+</div>
             )}
           </div>
-
           {/* Categories Button - Mobile */}
           <button
             onClick={() => setIsMobileMenuOpen(true)}
@@ -164,22 +170,29 @@ return (
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  <ApperIcon name="X" size={24} className="text-gray-600" />
+<ApperIcon name="X" size={24} className="text-gray-600" />
                 </button>
               </div>
-              <div className="overflow-y-auto h-[calc(100vh-73px)] py-2">
-                {categories.map((category) => (
-                  <div key={category.id} className="border-b border-gray-100 last:border-0">
-                    <Link
-                      to={`/?category=${category.id}`}
-                      className="flex items-center gap-3 px-4 py-4 hover:bg-secondary/10 transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <ApperIcon name={category.icon} size={24} className="text-primary" />
-                      <span className="font-medium text-gray-700 text-lg">{category.name}</span>
-                    </Link>
-                    {category.subcategories && (
+              
+              {/* Categories */}
+              <div className="flex-1 overflow-y-auto">
+                {categoriesLoading ? (
+                {categoriesLoading ? (
+                  <div className="px-4 py-8 text-center text-gray-500">Loading categories...</div>
+                ) : !categories || categories.length === 0 ? (
+                  <div className="px-4 py-8 text-center text-gray-500">No categories available</div>
+                ) : (
+                  categories.map((category) => (
+categories.map((category) => (
+                    <div key={category.id} className="border-b border-gray-100 last:border-0">
+                      <Link
+                        to={`/?category=${category.id}`}
+                        className="flex items-center gap-3 px-4 py-4 hover:bg-secondary/10 transition-colors"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <ApperIcon name={category.icon} size={24} className="text-primary" />
+                        <span className="font-medium text-gray-700 text-lg">{category.name}</span>
+                      </Link>
                       <div className="bg-gray-50 pl-8">
                         {category.subcategories.map((sub) => (
                           <Link
@@ -192,15 +205,16 @@ return (
                             <span className="text-gray-600">{sub.name}</span>
                           </Link>
                         ))}
+))}
                       </div>
                     )}
-                  </div>
-                ))}
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>
         )}
-
         {/* Mobile Search */}
         <div className="pb-4 md:hidden">
           <SearchBar onSearch={onSearch} placeholder="Search products..." />

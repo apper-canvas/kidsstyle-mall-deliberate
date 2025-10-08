@@ -1,28 +1,11 @@
 import React, { useEffect, useState } from "react";
-import CategoryButton from "@/components/molecules/CategoryButton";
+import categoryService from "@/services/api/categoryService";
 import ApperIcon from "@/components/ApperIcon";
+import CategoryButton from "@/components/molecules/CategoryButton";
+import Loading from "@/components/ui/Loading";
 import { cn } from "@/utils/cn";
-const categories = [
-  { id: "all", name: "All Products", icon: "Grid3x3" },
-  { id: "flash-sales", name: "Flash Sales", icon: "Flame" },
-  { 
-    id: "kids-clothing", 
-    name: "Kids Clothing", 
-    icon: "Shirt",
-    subcategories: [
-      { id: "baby", name: "Baby (0-2)", icon: "Baby" },
-      { id: "toddler", name: "Toddler (2-4)", icon: "Smile" },
-      { id: "kids", name: "Kids (4-8)", icon: "User" },
-      { id: "teen", name: "Teen (8+)", icon: "UserCircle" }
-    ]
-  },
-  { id: "accessories", name: "Accessories", icon: "Watch" },
-  { id: "toys", name: "Toys", icon: "Gamepad2" },
-  { id: "home-goods", name: "Home Goods", icon: "Home" },
-  { id: "mom-dad", name: "Mom & Dad", icon: "Users" }
-];
 
-const CategorySidebar = ({ products, selectedCategory, selectedSubcategory, onCategoryChange, onSubcategoryChange }) => {
+const CategorySidebar = ({ products, categories, categoriesLoading, selectedCategory, selectedSubcategory, onCategoryChange, onSubcategoryChange }) => {
   const [categoryCounts, setCategoryCounts] = useState({});
   const [expandedCategory, setExpandedCategory] = useState(null);
 useEffect(() => {
@@ -43,8 +26,8 @@ useEffect(() => {
     
     setCategoryCounts({ ...counts, ...subcategoryCounts });
   }, [products]);
-
-const getCategoryCount = (categoryName, subcategory = null) => {
+  
+  const getCategoryCount = (categoryName, subcategory = null) => {
     if (categoryName === "All Products") {
       return products?.length || 0;
     }
@@ -84,12 +67,16 @@ const getCategoryCount = (categoryName, subcategory = null) => {
       {/* Desktop Sidebar */}
 <aside className="hidden lg:block w-60 shrink-0">
         <div className="sticky top-24 space-y-2">
-          <h2 className="font-display font-bold text-xl text-gray-800 mb-4 px-4">
-            Categories
-          </h2>
-          {categories.map((category) => (
-            <div key={category.id}>
-              <div className="relative">
+{/* Category List */}
+        <nav className="space-y-2">
+          {categoriesLoading ? (
+            <div className="text-center py-8 text-gray-500">Loading categories...</div>
+          ) : !categories || categories.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">No categories available</div>
+          ) : (
+            categories.map((category) => (
+              <div key={category.id}>
+                <div className="relative">
                 <CategoryButton
                   category={category.name}
                   icon={category.icon}
@@ -147,19 +134,26 @@ const getCategoryCount = (categoryName, subcategory = null) => {
                       </span>
                     </button>
                   ))}
-                </div>
+</div>
               )}
             </div>
-          ))}
-        </div>
-      </aside>
+          ))
+          )}
+</nav>
+      </div>
+    </aside>
 
-      {/* Mobile Category Pills */}
-<div className="lg:hidden overflow-x-auto pb-4 -mx-4 px-4">
-        <div className="flex gap-2 min-w-max">
-          {categories.map((category) => (
-            <React.Fragment key={category.id}>
-              <button
+    {/* Horizontal Scroll Categories */}
+    <div className="lg:hidden bg-white border-b border-gray-100 px-4 py-3 shadow-sm">
+      <div className="flex gap-2 overflow-x-auto pb-2 hide-scrollbar">
+          {categoriesLoading ? (
+            <div className="text-center py-4 text-gray-500 w-full">Loading...</div>
+          ) : !categories || categories.length === 0 ? (
+            <div className="text-center py-4 text-gray-500 w-full">No categories</div>
+          ) : (
+            categories.map((category) => (
+              <React.Fragment key={category.id}>
+                <button
                 onClick={() => handleCategoryClick(category)}
                 className={cn(
                   "px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap transition-all duration-200 flex items-center gap-2",
@@ -218,11 +212,12 @@ const getCategoryCount = (categoryName, subcategory = null) => {
                         {getCategoryCount(category.name, sub.name)}
                       </span>
                     </button>
-                  ))}
+))}
                 </>
               )}
             </React.Fragment>
-          ))}
+          ))
+          )}
         </div>
       </div>
     </>

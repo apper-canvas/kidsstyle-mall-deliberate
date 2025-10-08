@@ -15,7 +15,7 @@ const getSizeRecommendation = (product) => {
 };
 
 const enhanceProductData = (product) => {
-const baseImage = product.image;
+  const baseImage = product.image;
   const category = product.category;
   const sizeRecommendation = getSizeRecommendation(product);
   
@@ -82,7 +82,7 @@ const productService = {
     return product ? enhanceProductData(product) : null;
   },
 
-  getByCategory: async (category) => {
+getByCategory: async (category) => {
     await delay(250);
     if (!category || category === "All Products") {
       return productsData.map(enhanceProductData);
@@ -98,9 +98,9 @@ const productService = {
     return productsData
       .filter(
         (item) =>
-          item.title.toLowerCase().includes(searchTerm) ||
-          item.category.toLowerCase().includes(searchTerm) ||
-          item.description.toLowerCase().includes(searchTerm)
+item.title.toLowerCase().includes(searchTerm) ||
+        item.category.toLowerCase().includes(searchTerm) ||
+        item.description.toLowerCase().includes(searchTerm)
       )
       .map(enhanceProductData);
   },
@@ -115,7 +115,7 @@ const productService = {
     const priceMax = currentProduct.price * 1.5;
 
     const related = productsData
-      .filter((item) => 
+.filter((item) => 
         item.Id !== parseInt(productId) &&
         item.category === currentProduct.category &&
         item.price >= priceMin &&
@@ -145,10 +145,10 @@ const productService = {
     // If we don't have enough complementary products, fill with random from different categories
     if (complementary.length < limit) {
       const additionalProducts = productsData
-        .filter((item) => 
+.filter((item) => 
           item.Id !== parseInt(productId) &&
           item.category !== currentProduct.category &&
-          !complementaryIds.includes(item.Id)
+          item.price >= priceMin
         )
         .sort(() => Math.random() - 0.5)
         .slice(0, limit - complementary.length)

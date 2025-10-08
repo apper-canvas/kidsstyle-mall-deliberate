@@ -1,0 +1,76 @@
+[
+  {
+    "Id": 1,
+    "id": "all",
+    "name": "All Products",
+    "icon": "Grid3x3",
+    "subcategories": []
+  },
+  {
+    "Id": 2,
+    "id": "flash-sales",
+    "name": "Flash Sales",
+    "icon": "Flame",
+    "subcategories": []
+  },
+  {
+    "Id": 3,
+    "id": "kids-clothing",
+    "name": "Kids Clothing",
+    "icon": "Shirt",
+    "subcategories": [
+      {
+        "Id": 31,
+        "id": "baby",
+        "name": "Baby (0-2)",
+        "icon": "Baby"
+      },
+      {
+        "Id": 32,
+        "id": "toddler",
+        "name": "Toddler (2-4)",
+        "icon": "Smile"
+      },
+      {
+        "Id": 33,
+        "id": "kids",
+        "name": "Kids (4-8)",
+        "icon": "User"
+      },
+      {
+        "Id": 34,
+        "id": "teen",
+        "name": "Teen (8+)",
+        "icon": "UserCircle"
+      }
+    ]
+  },
+  {
+    "Id": 4,
+    "id": "accessories",
+    "name": "Accessories",
+    "icon": "Watch",
+    "subcategories": []
+  },
+  {
+    "Id": 5,
+    "id": "toys",
+    "name": "Toys",
+    "icon": "Gamepad2",
+    "subcategories": []
+  },
+  {
+    "Id": 6,
+    "id": "home-goods",
+    "name": "Home Goods",
+    "icon": "Home",
+    "subcategories": []
+  },
+  {
+    "Id": 7,
+    "id": "mom-dad",
+    "name": "Mom & Dad",
+    "icon": "Users",
+    "subcategories": []
+  }
+]

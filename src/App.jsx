@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import recentlyViewedService from "@/services/api/recentlyViewedService";
+import categoryService from "@/services/api/categoryService";
 import Error from "@/components/ui/Error";
 import ShopPage from "@/components/pages/ShopPage";
 import ProductDetailPage from "@/components/pages/ProductDetailPage";

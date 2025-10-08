@@ -8,9 +8,13 @@ import Header from "@/components/organisms/Header";
 import ProductGrid from "@/components/organisms/ProductGrid";
 import RecentlyViewed from "@/components/organisms/RecentlyViewed";
 import productService from "@/services/api/productService";
+import categoryService from "@/services/api/categoryService";
 function ShopPage() {
   const { addToCart, recentlyViewed } = useCart();
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [categoriesError, setCategoriesError] = useState(null);
   const [loading, setLoading] = useState(true);
 const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -18,9 +22,25 @@ const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  useEffect(() => {
+useEffect(() => {
     loadProducts();
+    loadCategories();
   }, []);
+
+  const loadCategories = async () => {
+    try {
+      setCategoriesLoading(true);
+      setCategoriesError(null);
+      const data = await categoryService.getAll();
+      setCategories(data);
+    } catch (error) {
+      console.error("Failed to load categories:", error);
+      setCategoriesError(error.message);
+      toast.error("Failed to load categories");
+    } finally {
+      setCategoriesLoading(false);
+    }
+  };
 
   async function loadProducts() {
     try {
@@ -35,7 +55,6 @@ const [error, setError] = useState(null);
       setLoading(false);
     }
   }
-
 const handleCategoryChange = (category) => {
     setSelectedCategory(category);
     setSelectedSubcategory(null);
@@ -61,22 +80,26 @@ const handleCategoryChange = (category) => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header
+<Header
         onSearch={setSearchQuery}
         onOpenCart={() => setIsCartOpen(true)}
+        categories={categories}
+        categoriesLoading={categoriesLoading}
       />
       
 <div className="pt-20 sm:pt-24">
         <DailyDeals products={products} onAddToCart={addToCart} />
         <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
 <div className="flex gap-6">
-            <CategorySidebar
-              products={products}
-              selectedCategory={selectedCategory}
-              selectedSubcategory={selectedSubcategory}
-              onCategoryChange={handleCategoryChange}
-              onSubcategoryChange={handleSubcategoryChange}
-            />
+          <CategorySidebar
+            products={products}
+            categories={categories}
+            categoriesLoading={categoriesLoading}
+            selectedCategory={selectedCategory}
+            selectedSubcategory={selectedSubcategory}
+            onCategoryChange={handleCategoryChange}
+            onSubcategoryChange={handleSubcategoryChange}
+          />
             <ProductGrid
               products={filteredProducts}
               loading={loading}
