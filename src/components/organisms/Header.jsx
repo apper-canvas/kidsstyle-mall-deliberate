@@ -123,10 +123,9 @@ return (
                           <span className="font-medium text-gray-700">{category.name}</span>
                         </Link>
                       )}
-                    </div>
+</div>
                   ))
                 )}
-)}
               </div>
             )}
           </div>
@@ -168,13 +167,13 @@ return (
             <div className="absolute inset-y-0 left-0 w-80 max-w-[85vw] bg-white shadow-2xl animate-in slide-in-from-left duration-300">
               <div className="flex items-center justify-between p-4 border-b border-gray-200">
                 <h2 className="text-xl font-bold font-display text-gray-800">Categories</h2>
-                <button
+<button
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-<ApperIcon name="X" size={24} className="text-gray-600" />
+                >
+                  <ApperIcon name="X" size={24} className="text-gray-600" />
                 </button>
               </div>
-              
 {/* Categories */}
               <div className="flex-1 overflow-y-auto">
                 {categoriesLoading ? (
