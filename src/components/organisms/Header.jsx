@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import React, { useEffect, useRef, useState } from "react";
-import categoryService from "@/services/api/categoryService";
 import { useCart } from "@/App";
 import ApperIcon from "@/components/ApperIcon";
 import SearchBar from "@/components/molecules/SearchBar";
 import Loading from "@/components/ui/Loading";
 import Badge from "@/components/atoms/Badge";
+import categoryService from "@/services/api/categoryService";
 
 const HARDCODED_CATEGORIES = [
   { id: "flash-sales", name: "Flash Sales", icon: "Flame" },
@@ -26,7 +26,6 @@ const HARDCODED_CATEGORIES = [
   { id: "mom-dad", name: "Mom & Dad", icon: "Users" }
 ];
 
-const Header = ({ onSearch, onOpenCart, categories, categoriesLoading }) => {
 const Header = ({ onSearch, onOpenCart, categories, categoriesLoading }) => {
   const { cart } = useCart();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -114,7 +113,7 @@ return (
                             ))}
                           </div>
                         </div>
-                      ) : (
+) : (
                         <Link
                           to={`/?category=${category.id}`}
                           className="flex items-center gap-3 px-4 py-3 hover:bg-secondary/10 transition-colors"
@@ -123,13 +122,15 @@ return (
                           <ApperIcon name={category.icon} size={20} className="text-primary" />
                           <span className="font-medium text-gray-700">{category.name}</span>
                         </Link>
-)}
+                      )}
                     </div>
                   ))
                 )}
-</div>
+)}
+              </div>
             )}
           </div>
+          {/* Categories Button - Mobile */}
           {/* Categories Button - Mobile */}
           <button
             onClick={() => setIsMobileMenuOpen(true)}
@@ -174,16 +175,14 @@ return (
                 </button>
               </div>
               
-              {/* Categories */}
+{/* Categories */}
               <div className="flex-1 overflow-y-auto">
-                {categoriesLoading ? (
                 {categoriesLoading ? (
                   <div className="px-4 py-8 text-center text-gray-500">Loading categories...</div>
                 ) : !categories || categories.length === 0 ? (
                   <div className="px-4 py-8 text-center text-gray-500">No categories available</div>
-                ) : (
+) : (
                   categories.map((category) => (
-categories.map((category) => (
                     <div key={category.id} className="border-b border-gray-100 last:border-0">
                       <Link
                         to={`/?category=${category.id}`}
@@ -203,11 +202,9 @@ categories.map((category) => (
                           >
                             <ApperIcon name={sub.icon} size={20} className="text-secondary" />
                             <span className="text-gray-600">{sub.name}</span>
-                          </Link>
+</Link>
                         ))}
-))}
                       </div>
-                    )}
                     </div>
                   ))
                 )}

@@ -1,4 +1,5 @@
 import productsData from "@/services/mockData/products.json";
+import React from "react";
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -140,12 +141,13 @@ item.title.toLowerCase().includes(searchTerm) ||
       .map(id => productsData.find(item => item.Id === id))
       .filter(Boolean)
       .slice(0, limit)
-      .map(enhanceProductData);
+.map(enhanceProductData);
 
     // If we don't have enough complementary products, fill with random from different categories
     if (complementary.length < limit) {
+      const priceMin = currentProduct?.price ? currentProduct.price * 0.8 : 0;
       const additionalProducts = productsData
-.filter((item) => 
+        .filter((item) => 
           item.Id !== parseInt(productId) &&
           item.category !== currentProduct.category &&
           item.price >= priceMin
