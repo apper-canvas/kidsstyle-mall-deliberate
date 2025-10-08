@@ -15,7 +15,7 @@ const CheckoutPage = () => {
   const [loading, setLoading] = useState(false);
   const [orderNumber, setOrderNumber] = useState(null);
 
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
@@ -24,7 +24,8 @@ const CheckoutPage = () => {
     city: "",
     state: "",
     zipCode: "",
-    country: "United States"
+    country: "United States",
+    paymentMethod: "credit-card"
   });
 
   const [errors, setErrors] = useState({});
@@ -87,7 +88,7 @@ const CheckoutPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputChange = (e) => {
+const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -100,6 +101,13 @@ const CheckoutPage = () => {
         [name]: ""
       }));
     }
+  };
+
+  const handlePaymentMethodChange = (method) => {
+    setFormData((prev) => ({
+      ...prev,
+      paymentMethod: method
+    }));
   };
 
   const handleNextStep = () => {
@@ -118,7 +126,7 @@ const CheckoutPage = () => {
     }
   };
 
-  const handleSubmitOrder = async () => {
+const handleSubmitOrder = async () => {
     setLoading(true);
     
     try {
@@ -146,6 +154,7 @@ const CheckoutPage = () => {
         shipping,
         tax,
         total,
+        paymentMethod: formData.paymentMethod,
         status: "pending",
         createdAt: new Date().toISOString()
       };
@@ -417,8 +426,7 @@ const CheckoutPage = () => {
                   </div>
                 </div>
               )}
-
-              {currentStep === 2 && (
+{currentStep === 2 && (
                 <div>
                   <h2 className="text-xl font-display font-bold text-gray-800 mb-6">
                     Payment Information
@@ -433,9 +441,86 @@ const CheckoutPage = () => {
                         </p>
                         <p className="text-sm text-gray-600">
                           This is a demonstration checkout. No actual payment will be processed. 
-                          Click "Place Order" to complete your demo order.
+                          Select your preferred payment method and click "Place Order" to complete your demo order.
                         </p>
                       </div>
+                    </div>
+                  </div>
+
+                  <div className="mb-6">
+                    <h3 className="font-semibold text-gray-800 mb-4">Select Payment Method</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <motion.button
+                        type="button"
+                        onClick={() => handlePaymentMethodChange("credit-card")}
+                        className={`relative border-2 rounded-lg p-6 text-left transition-all ${
+                          formData.paymentMethod === "credit-card"
+                            ? "border-primary bg-primary/5"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <div className="flex items-start gap-4">
+                          <input
+                            type="radio"
+                            name="paymentMethod"
+                            value="credit-card"
+                            checked={formData.paymentMethod === "credit-card"}
+                            onChange={() => handlePaymentMethodChange("credit-card")}
+                            className="mt-1 accent-primary"
+                          />
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <ApperIcon 
+                                name="CreditCard" 
+                                size={24} 
+                                className={formData.paymentMethod === "credit-card" ? "text-primary" : "text-gray-600"}
+                              />
+                              <span className="font-semibold text-gray-800">Credit Card</span>
+                            </div>
+                            <p className="text-sm text-gray-600">
+                              Pay securely with your credit or debit card
+                            </p>
+                          </div>
+                        </div>
+                      </motion.button>
+
+                      <motion.button
+                        type="button"
+                        onClick={() => handlePaymentMethodChange("paypal")}
+                        className={`relative border-2 rounded-lg p-6 text-left transition-all ${
+                          formData.paymentMethod === "paypal"
+                            ? "border-primary bg-primary/5"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <div className="flex items-start gap-4">
+                          <input
+                            type="radio"
+                            name="paymentMethod"
+                            value="paypal"
+                            checked={formData.paymentMethod === "paypal"}
+                            onChange={() => handlePaymentMethodChange("paypal")}
+                            className="mt-1 accent-primary"
+                          />
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <ApperIcon 
+                                name="DollarSign" 
+                                size={24} 
+                                className={formData.paymentMethod === "paypal" ? "text-primary" : "text-gray-600"}
+                              />
+                              <span className="font-semibold text-gray-800">PayPal</span>
+                            </div>
+                            <p className="text-sm text-gray-600">
+                              Fast and secure payment with PayPal
+                            </p>
+                          </div>
+                        </div>
+                      </motion.button>
                     </div>
                   </div>
 

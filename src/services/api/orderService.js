@@ -27,7 +27,7 @@ const orderService = {
   create: async (orderData) => {
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    const newOrder = {
+const newOrder = {
       Id: nextId++,
       orderNumber: orderData.orderNumber || `ORD-${Date.now()}`,
       customerName: orderData.customerName,
@@ -39,6 +39,7 @@ const orderService = {
       shipping: orderData.shipping,
       tax: orderData.tax,
       total: orderData.total,
+      paymentMethod: orderData.paymentMethod,
       status: orderData.status || "pending",
       createdAt: orderData.createdAt || new Date().toISOString()
     };
