@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CategoryButton from "@/components/molecules/CategoryButton";
-import ApperIcon from "@/components/atoms/ApperIcon";
+import ApperIcon from "@/components/ApperIcon";
 import { cn } from "@/utils/cn";
 const categories = [
   { id: "all", name: "All Products", icon: "Grid3x3" },
