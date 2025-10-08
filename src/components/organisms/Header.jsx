@@ -1,14 +1,14 @@
+import { Link } from "react-router-dom";
 import ApperIcon from "@/components/ApperIcon";
 import SearchBar from "@/components/molecules/SearchBar";
 import Badge from "@/components/atoms/Badge";
-
 const Header = ({ onSearch, cartItemCount, onOpenCart }) => {
   return (
     <header className="fixed top-0 left-0 right-0 bg-white shadow-md z-40">
       <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20 gap-4">
-          {/* Logo */}
-          <div className="flex items-center gap-2 shrink-0">
+{/* Logo */}
+          <Link to="/" className="flex items-center gap-2 shrink-0 hover:opacity-90 transition-opacity">
             <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
               <ApperIcon name="ShoppingBag" className="text-white" size={24} />
             </div>
@@ -18,7 +18,7 @@ const Header = ({ onSearch, cartItemCount, onOpenCart }) => {
               </h1>
               <p className="text-xs text-gray-500">Affordable Family Products</p>
             </div>
-          </div>
+          </Link>
 
           {/* Search Bar */}
           <div className="flex-1 max-w-2xl hidden md:block">
