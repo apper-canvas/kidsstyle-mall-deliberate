@@ -10,20 +10,22 @@ import Loading from "@/components/ui/Loading";
 import Badge from "@/components/atoms/Badge";
 import Button from "@/components/atoms/Button";
 import SizeGuideModal from "@/components/atoms/SizeGuideModal";
+import ImageGalleryModal from "@/components/atoms/ImageGalleryModal";
 import { cn } from "@/utils/cn";
 import productService from "@/services/api/productService";
-
 function ProductDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(0);
+const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
-const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+  const [isZoomOpen, setIsZoomOpen] = useState(false);
+  
   useEffect(() => {
     loadProduct();
 }, [id]);
@@ -138,15 +140,33 @@ const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
           className="bg-white rounded-xl shadow-card overflow-hidden"
         >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 lg:p-8">
-            {/* Image Gallery */}
+{/* Image Gallery */}
             <div className="space-y-4">
               {/* Main Image */}
-              <div className="relative aspect-square rounded-xl overflow-hidden bg-gray-100">
+              <div 
+                className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 cursor-zoom-in group"
+                onClick={() => setIsZoomOpen(true)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setIsZoomOpen(true);
+                  }
+                }}
+                aria-label="Click to zoom image"
+              >
                 <img
                   src={product.images[selectedImage]}
                   alt={product.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
+                
+                {/* Zoom Icon Overlay */}
+                <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <ApperIcon name="ZoomIn" size={20} className="text-white" />
+                </div>
+                
                 {!product.inStock && (
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                     <span className="bg-error text-white px-6 py-3 rounded-lg font-semibold text-lg">
@@ -158,7 +178,7 @@ const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
 
               {/* Thumbnail Gallery */}
               {product.images.length > 1 && (
-                <div className="grid grid-cols-4 gap-3">
+                <div className="grid grid-cols-5 gap-3">
                   {product.images.map((image, index) => (
                     <button
                       key={index}
@@ -166,9 +186,10 @@ const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
                       className={cn(
                         "relative aspect-square rounded-lg overflow-hidden border-2 transition-all duration-200",
                         selectedImage === index
-                          ? "border-primary shadow-md scale-105"
-                          : "border-gray-200 hover:border-gray-300"
+                          ? "border-primary shadow-md scale-105 ring-2 ring-primary/20"
+                          : "border-gray-200 hover:border-primary/50 hover:shadow-sm"
                       )}
+                      aria-label={`View image ${index + 1}`}
                     >
                       <img
                         src={image}
@@ -179,6 +200,16 @@ const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
                   ))}
                 </div>
               )}
+              
+              {/* Image Gallery Modal */}
+              <ImageGalleryModal
+                isOpen={isZoomOpen}
+                onClose={() => setIsZoomOpen(false)}
+                images={product.images}
+                currentIndex={selectedImage}
+                onNavigate={setSelectedImage}
+                productTitle={product.title}
+              />
             </div>
 
             {/* Product Information */}

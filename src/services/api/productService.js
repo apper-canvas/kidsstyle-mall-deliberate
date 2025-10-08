@@ -20,12 +20,13 @@ const enhanceProductData = (product) => {
   const sizeRecommendation = getSizeRecommendation(product);
   
   const enhancedProduct = {
-    ...product,
+...product,
     images: [
-      baseImage,
-      baseImage.replace('.jpg', '-2.jpg'),
-      baseImage.replace('.jpg', '-3.jpg'),
-      baseImage.replace('.jpg', '-4.jpg')
+      baseImage,                                    // Main front view
+      baseImage.replace('.jpg', '-2.jpg'),         // Side angle
+      baseImage.replace('.jpg', '-3.jpg'),         // Back view
+      baseImage.replace('.jpg', '-lifestyle.jpg'), // Lifestyle shot (in use)
+      baseImage.replace('.jpg', '-detail.jpg')     // Close-up detail shot
     ],
     fullDescription: `${product.description} This high-quality ${category.toLowerCase()} item is perfect for kids and families. Made with care and attention to detail, it offers great value and lasting durability. Ideal for everyday use or special occasions, this product combines style, comfort, and functionality in one package.`,
     sizes: category === "Kids Clothing" ? ["XS", "S", "M", "L", "XL"] : undefined,
