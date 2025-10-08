@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { useCart } from "@/App";
 import RecentlyViewed from "@/components/organisms/RecentlyViewed";
+import ProductRecommendations from "@/components/organisms/ProductRecommendations";
 import ApperIcon from "@/components/ApperIcon";
 import Error from "@/components/ui/Error";
 import Loading from "@/components/ui/Loading";
@@ -25,9 +26,12 @@ const [selectedImage, setSelectedImage] = useState(0);
   const [isAdded, setIsAdded] = useState(false);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [complementaryProducts, setComplementaryProducts] = useState([]);
   useEffect(() => {
-    loadProduct();
-}, [id]);
+loadProduct();
+    loadRecommendations();
+  }, [id]);
 
   const { trackProductView, recentlyViewed } = useCart();
 
@@ -37,7 +41,7 @@ const [selectedImage, setSelectedImage] = useState(0);
     }
   }, [product]);
 
-  async function loadProduct() {
+async function loadProduct() {
     try {
       setLoading(true);
       setError(null);
@@ -45,7 +49,7 @@ const [selectedImage, setSelectedImage] = useState(0);
       if (!data) {
         setError("Product not found");
       } else {
-setProduct(data);
+        setProduct(data);
         if (data.sizes && data.sizes.length > 0) {
           // Set first available (in-stock) size as default
           const firstAvailableSize = data.sizes.find(size => {
@@ -60,6 +64,20 @@ setProduct(data);
       console.error("Error loading product:", err);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function loadRecommendations() {
+    try {
+      const [related, complementary] = await Promise.all([
+        productService.getRelatedProducts(id, 6),
+        productService.getComplementaryProducts(id, 4)
+      ]);
+      setRelatedProducts(related);
+      setComplementaryProducts(complementary);
+    } catch (err) {
+      console.error("Error loading recommendations:", err);
+      // Don't show error to user - recommendations are optional
     }
   }
 
@@ -492,7 +510,22 @@ const newQuantity = quantity + change;
         category={product?.category}
       />
 
+        {/* Product Recommendations */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ProductRecommendations
+            title="You May Also Like"
+            products={relatedProducts}
+            onAddToCart={addToCart}
+            icon="Sparkles"
+          />
+
+          <ProductRecommendations
+            title="Frequently Bought Together"
+            products={complementaryProducts}
+            onAddToCart={addToCart}
+            icon="Package"
+          />
+
           <RecentlyViewed 
             products={recentlyViewed.filter(p => p.Id !== product?.Id)} 
             onAddToCart={addToCart}
