@@ -2,45 +2,23 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useCart } from "@/App";
 import DailyDeals from "@/components/organisms/DailyDeals";
-import CategorySidebar from "@/components/organisms/CategorySidebar";
 import CartPanel from "@/components/organisms/CartPanel";
 import Header from "@/components/organisms/Header";
 import ProductGrid from "@/components/organisms/ProductGrid";
 import RecentlyViewed from "@/components/organisms/RecentlyViewed";
 import productService from "@/services/api/productService";
-import categoryService from "@/services/api/categoryService";
 function ShopPage() {
   const { addToCart, recentlyViewed } = useCart();
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [categoriesLoading, setCategoriesLoading] = useState(true);
-  const [categoriesError, setCategoriesError] = useState(null);
-  const [loading, setLoading] = useState(true);
-const [error, setError] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isCartOpen, setIsCartOpen] = useState(false);
 
 useEffect(() => {
     loadProducts();
-    loadCategories();
-  }, []);
+}, []);
 
-  const loadCategories = async () => {
-    try {
-      setCategoriesLoading(true);
-      setCategoriesError(null);
-      const data = await categoryService.getAll();
-      setCategories(data);
-    } catch (error) {
-      console.error("Failed to load categories:", error);
-      setCategoriesError(error.message);
-      toast.error("Failed to load categories");
-    } finally {
-      setCategoriesLoading(false);
-    }
-  };
 
   async function loadProducts() {
     try {
@@ -55,22 +33,9 @@ useEffect(() => {
       setLoading(false);
     }
   }
-const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-    setSelectedSubcategory(null);
-  };
 
-  const handleSubcategoryChange = (categoryName, subcategory) => {
-    setSelectedCategory(categoryName);
-    setSelectedSubcategory(subcategory);
-  };
-
-  const filteredProducts = products.filter((product) => {
-    const matchesCategory =
-      selectedCategory === "All" || 
-      (selectedCategory === "Flash Sales" ? product.salePrice : 
-       selectedSubcategory ? product.subcategory === selectedSubcategory : 
-       product.category === selectedCategory);
+const filteredProducts = products.filter((product) => {
+    const matchesCategory = true;
     const matchesSearch =
       searchQuery === "" ||
       product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -81,25 +46,14 @@ const handleCategoryChange = (category) => {
   return (
     <div className="min-h-screen bg-background">
 <Header
-        onSearch={setSearchQuery}
+onSearch={setSearchQuery}
         onOpenCart={() => setIsCartOpen(true)}
-        categories={categories}
-        categoriesLoading={categoriesLoading}
       />
       
 <div className="pt-20 sm:pt-24">
         <DailyDeals products={products} onAddToCart={addToCart} />
         <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
-<div className="flex gap-6">
-          <CategorySidebar
-            products={products}
-            categories={categories}
-            categoriesLoading={categoriesLoading}
-            selectedCategory={selectedCategory}
-            selectedSubcategory={selectedSubcategory}
-            onCategoryChange={handleCategoryChange}
-            onSubcategoryChange={handleSubcategoryChange}
-          />
+<div className="flex-1">
             <ProductGrid
               products={filteredProducts}
               loading={loading}
