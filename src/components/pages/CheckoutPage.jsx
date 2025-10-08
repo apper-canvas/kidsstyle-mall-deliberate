@@ -10,7 +10,7 @@ import orderService from "@/services/api/orderService";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
-  const { cartItems, updateQuantity } = useCart();
+const { cartItems, clearCart } = useCart();
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [orderNumber, setOrderNumber] = useState(null);
@@ -162,9 +162,7 @@ const handleSubmitOrder = async () => {
       const createdOrder = await orderService.create(orderData);
       setOrderNumber(createdOrder.orderNumber);
       
-      cartItems.forEach(item => {
-        updateQuantity(item.Id, 0);
-      });
+      clearCart();
 
       setCurrentStep(3);
       toast.success("Order placed successfully!");
@@ -429,7 +427,7 @@ const handleSubmitOrder = async () => {
 {currentStep === 2 && (
                 <div>
                   <h2 className="text-xl font-display font-bold text-gray-800 mb-6">
-                    Payment Information
+                    Review Your Order
                   </h2>
                   
                   <div className="bg-info/10 border-2 border-info rounded-lg p-4 mb-6">
@@ -447,6 +445,53 @@ const handleSubmitOrder = async () => {
                     </div>
                   </div>
 
+                  {/* Order Summary */}
+                  <div className="border-2 border-gray-200 rounded-lg p-6 mb-6">
+                    <h3 className="font-semibold text-gray-800 mb-4">Order Summary</h3>
+                    <div className="space-y-4 mb-4">
+                      {cartItems.map((item) => (
+                        <div key={`${item.Id}-${item.selectedSize}-${item.selectedColor}`} className="flex gap-4">
+                          <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <ApperIcon name="Package" size={32} className="text-gray-400" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-medium text-gray-800 truncate">{item.name}</h4>
+                            <div className="text-sm text-gray-600 space-y-1 mt-1">
+                              {item.selectedSize && <p>Size: {item.selectedSize}</p>}
+                              {item.selectedColor && <p>Color: {item.selectedColor}</p>}
+                              <p>Quantity: {item.quantity}</p>
+                            </div>
+                          </div>
+                          <div className="text-right flex-shrink-0">
+                            <p className="font-semibold text-gray-800">
+                              ${(item.price * item.quantity).toFixed(2)}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="border-t-2 border-gray-200 pt-4 space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Subtotal</span>
+                        <span className="font-medium text-gray-800">${subtotal.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Shipping</span>
+                        <span className="font-medium text-gray-800">${shipping.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Tax</span>
+                        <span className="font-medium text-gray-800">${tax.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between text-lg font-bold border-t-2 border-gray-200 pt-2 mt-2">
+                        <span className="text-gray-800">Total</span>
+                        <span className="text-primary">${total.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Payment Method Selection */}
                   <div className="mb-6">
                     <h3 className="font-semibold text-gray-800 mb-4">Select Payment Method</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -524,6 +569,7 @@ const handleSubmitOrder = async () => {
                     </div>
                   </div>
 
+                  {/* Shipping Address Review */}
                   <div className="border-2 border-gray-200 rounded-lg p-6 mb-6">
                     <h3 className="font-semibold text-gray-800 mb-4">Shipping Address</h3>
                     <div className="text-sm text-gray-600 space-y-1">
@@ -560,24 +606,105 @@ const handleSubmitOrder = async () => {
                 </div>
               )}
 
-              {currentStep === 3 && (
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <ApperIcon name="Check" size={32} className="text-success" />
-                  </div>
-                  
-                  <h2 className="text-2xl font-display font-bold text-gray-800 mb-2">
-                    Order Confirmed!
-                  </h2>
-                  
-                  <p className="text-gray-600 mb-6">
-                    Thank you for your order. We've sent a confirmation email to{" "}
-                    <span className="font-medium">{formData.email}</span>
-                  </p>
+{currentStep === 3 && (
+                <div className="py-8">
+                  <div className="text-center mb-8">
+                    <div className="w-16 h-16 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <ApperIcon name="Check" size={32} className="text-success" />
+                    </div>
+                    
+                    <h2 className="text-2xl font-display font-bold text-gray-800 mb-2">
+                      Order Confirmed!
+                    </h2>
+                    
+                    <p className="text-gray-600 mb-4">
+                      Thank you for your order. We've sent a confirmation email to{" "}
+                      <span className="font-medium">{formData.email}</span>
+                    </p>
 
-                  <div className="bg-background rounded-lg p-4 mb-6">
-                    <p className="text-sm text-gray-600 mb-1">Order Number</p>
-                    <p className="text-lg font-bold text-primary">{orderNumber}</p>
+                    <div className="bg-background rounded-lg p-4 inline-block">
+                      <p className="text-sm text-gray-600 mb-1">Order Number</p>
+                      <p className="text-lg font-bold text-primary">{orderNumber}</p>
+                    </div>
+                  </div>
+
+                  {/* Order Details */}
+                  <div className="border-2 border-gray-200 rounded-lg p-6 mb-6">
+                    <h3 className="font-semibold text-gray-800 mb-4">Order Details</h3>
+                    
+                    {/* Items */}
+                    <div className="space-y-4 mb-6">
+                      {cartItems.map((item) => (
+                        <div key={`${item.Id}-${item.selectedSize}-${item.selectedColor}`} className="flex gap-4">
+                          <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <ApperIcon name="Package" size={24} className="text-gray-400" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-medium text-gray-800 truncate">{item.name}</h4>
+                            <div className="text-sm text-gray-600 space-y-1 mt-1">
+                              {item.selectedSize && <p>Size: {item.selectedSize}</p>}
+                              {item.selectedColor && <p>Color: {item.selectedColor}</p>}
+                              <p>Qty: {item.quantity}</p>
+                            </div>
+                          </div>
+                          <div className="text-right flex-shrink-0">
+                            <p className="font-semibold text-gray-800">
+                              ${(item.price * item.quantity).toFixed(2)}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Pricing Summary */}
+                    <div className="border-t-2 border-gray-200 pt-4 space-y-2 mb-6">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Subtotal</span>
+                        <span className="font-medium text-gray-800">${subtotal.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Shipping</span>
+                        <span className="font-medium text-gray-800">${shipping.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Tax</span>
+                        <span className="font-medium text-gray-800">${tax.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between text-lg font-bold border-t-2 border-gray-200 pt-2 mt-2">
+                        <span className="text-gray-800">Total</span>
+                        <span className="text-primary">${total.toFixed(2)}</span>
+                      </div>
+                    </div>
+
+                    {/* Shipping Address */}
+                    <div className="border-t-2 border-gray-200 pt-4 mb-4">
+                      <h4 className="font-semibold text-gray-800 mb-2">Shipping Address</h4>
+                      <div className="text-sm text-gray-600 space-y-1">
+                        <p className="font-medium text-gray-800">
+                          {formData.firstName} {formData.lastName}
+                        </p>
+                        <p>{formData.address}</p>
+                        <p>
+                          {formData.city}, {formData.state} {formData.zipCode}
+                        </p>
+                        <p>{formData.country}</p>
+                      </div>
+                    </div>
+
+                    {/* Payment Method */}
+                    <div className="border-t-2 border-gray-200 pt-4">
+                      <h4 className="font-semibold text-gray-800 mb-2">Payment Method</h4>
+                      <div className="flex items-center gap-2">
+                        <ApperIcon 
+                          name={formData.paymentMethod === "credit-card" ? "CreditCard" : "DollarSign"} 
+                          size={20} 
+                          className="text-gray-600"
+                        />
+                        <span className="text-sm text-gray-600">
+                          {formData.paymentMethod === "credit-card" ? "Credit Card" : "PayPal"}
+                        </span>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">

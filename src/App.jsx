@@ -72,17 +72,22 @@ const [cartItems, setCartItems] = useState(() => {
     );
   };
 
-  const removeFromCart = (productId) => {
+const removeFromCart = (productId) => {
     setCartItems((prev) => prev.filter((item) => item.productId !== productId));
+  };
+
+  const clearCart = () => {
+    setCartItems([]);
   };
 
 const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
-  const cartValue = {
+const cartValue = {
     cartItems,
     addToCart,
     updateQuantity,
     removeFromCart,
+    clearCart,
     totalItems,
     recentlyViewed,
     trackProductView,
