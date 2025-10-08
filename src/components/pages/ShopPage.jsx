@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import RecentlyViewed from "@/components/organisms/RecentlyViewed";
 import { useCart } from "@/App";
+import DailyDeals from "@/components/organisms/DailyDeals";
 import CategorySidebar from "@/components/organisms/CategorySidebar";
 import CartPanel from "@/components/organisms/CartPanel";
 import Header from "@/components/organisms/Header";
 import ProductGrid from "@/components/organisms/ProductGrid";
-import DailyDeals from "@/components/organisms/DailyDeals";
+import RecentlyViewed from "@/components/organisms/RecentlyViewed";
 import productService from "@/services/api/productService";
 function ShopPage() {
   const { addToCart, recentlyViewed } = useCart();
