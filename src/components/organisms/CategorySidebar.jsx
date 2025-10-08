@@ -4,6 +4,7 @@ import ApperIcon from "@/components/ApperIcon";
 import { cn } from "@/utils/cn";
 const categories = [
   { id: "all", name: "All Products", icon: "Grid3x3" },
+  { id: "flash-sales", name: "Flash Sales", icon: "Flame" },
   { 
     id: "kids-clothing", 
     name: "Kids Clothing", 
@@ -46,6 +47,10 @@ useEffect(() => {
 const getCategoryCount = (categoryName, subcategory = null) => {
     if (categoryName === "All Products") {
       return products?.length || 0;
+    }
+    
+    if (categoryName === "Flash Sales") {
+      return products?.filter(p => p.salePrice).length || 0;
     }
     
     if (subcategory) {

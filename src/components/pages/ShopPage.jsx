@@ -6,6 +6,7 @@ import CategorySidebar from "@/components/organisms/CategorySidebar";
 import CartPanel from "@/components/organisms/CartPanel";
 import Header from "@/components/organisms/Header";
 import ProductGrid from "@/components/organisms/ProductGrid";
+import DailyDeals from "@/components/organisms/DailyDeals";
 import productService from "@/services/api/productService";
 function ShopPage() {
   const { addToCart, recentlyViewed } = useCart();
@@ -34,9 +35,10 @@ function ShopPage() {
     }
   }
 
-  const filteredProducts = products.filter((product) => {
+const filteredProducts = products.filter((product) => {
     const matchesCategory =
-      selectedCategory === "All" || product.category === selectedCategory;
+      selectedCategory === "All" || 
+      (selectedCategory === "Flash Sales" ? product.salePrice : product.category === selectedCategory);
     const matchesSearch =
       searchQuery === "" ||
       product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -51,7 +53,8 @@ function ShopPage() {
         onOpenCart={() => setIsCartOpen(true)}
       />
       
-      <div className="pt-20 sm:pt-24">
+<div className="pt-20 sm:pt-24">
+        <DailyDeals products={products} onAddToCart={addToCart} />
         <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex gap-6">
             <CategorySidebar
