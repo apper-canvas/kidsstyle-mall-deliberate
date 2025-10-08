@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CategoryButton from "@/components/molecules/CategoryButton";
 import ApperIcon from "@/components/atoms/ApperIcon";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 const categories = [
   { id: "all", name: "All Products", icon: "Grid3x3" },
   { id: "kids-clothing", name: "Kids Clothing", icon: "Shirt" },
