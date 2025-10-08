@@ -7,6 +7,7 @@ import Header from "@/components/organisms/Header";
 import ProductGrid from "@/components/organisms/ProductGrid";
 import RecentlyViewed from "@/components/organisms/RecentlyViewed";
 import productService from "@/services/api/productService";
+import categoryService from "@/services/api/categoryService";
 function ShopPage() {
   const { addToCart, recentlyViewed } = useCart();
   const [products, setProducts] = useState([]);
@@ -14,13 +15,16 @@ function ShopPage() {
 const [error, setError] = useState(null);
 const [searchQuery, setSearchQuery] = useState("");
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [categoriesError, setCategoriesError] = useState(null);
 
 useEffect(() => {
 loadProducts();
+loadCategories();
   }, []);
 
-
-  async function loadProducts() {
+async function loadProducts() {
     try {
       setLoading(true);
       setError(null);
@@ -31,6 +35,20 @@ loadProducts();
       toast.error("Failed to load products");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function loadCategories() {
+    try {
+      setCategoriesLoading(true);
+      setCategoriesError(null);
+      const data = await categoryService.getAll();
+      setCategories(data);
+    } catch (err) {
+      setCategoriesError(err.message);
+      toast.error("Failed to load categories");
+    } finally {
+      setCategoriesLoading(false);
     }
   }
 
@@ -57,6 +75,8 @@ const filteredProducts = products.filter((product) => {
               products={filteredProducts}
               loading={loading}
               error={error}
+              categories={categories}
+              categoriesLoading={categoriesLoading}
             />
           </div>
         </div>
