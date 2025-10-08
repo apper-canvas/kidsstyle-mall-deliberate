@@ -5,24 +5,27 @@
     "price": 14.99,
     "image": "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=400&h=400&fit=crop",
     "category": "Kids Clothing",
+    "subcategory": "Kids (4-8)",
     "description": "Bright and colorful striped t-shirt perfect for everyday wear",
     "inStock": true
   },
-  {
+{
     "Id": 2,
     "title": "Denim Overalls Set",
     "price": 29.99,
     "image": "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=400&h=400&fit=crop",
     "category": "Kids Clothing",
+    "subcategory": "Toddler (2-4)",
     "description": "Classic denim overalls with adjustable straps",
     "inStock": true
   },
-  {
+{
     "Id": 3,
     "title": "Flower Print Dress",
     "price": 24.99,
     "image": "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?w=400&h=400&fit=crop",
     "category": "Kids Clothing",
+    "subcategory": "Baby (0-2)",
     "description": "Beautiful floral pattern dress for special occasions",
     "inStock": true
   },

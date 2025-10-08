@@ -15,14 +15,15 @@ const enhanceProductData = (product) => {
       baseImage.replace('.jpg', '-4.jpg')
     ],
     fullDescription: `${product.description} This high-quality ${category.toLowerCase()} item is perfect for kids and families. Made with care and attention to detail, it offers great value and lasting durability. Ideal for everyday use or special occasions, this product combines style, comfort, and functionality in one package.`,
-    sizes: category === "Clothing" ? ["XS", "S", "M", "L", "XL"] : undefined,
-    ageRange: category === "Toys" 
-      ? "3-8 years" 
-      : category === "Books" 
-        ? "4-10 years" 
-        : category === "Clothing" 
+    sizes: category === "Kids Clothing" ? ["XS", "S", "M", "L", "XL"] : undefined,
+    ageRange: product.subcategory 
+      ? product.subcategory 
+      : category === "Toys" 
+        ? "3-8 years" 
+        : category === "Kids Clothing" 
           ? "2-12 years" 
-          : "All ages"
+          : "All ages",
+    subcategory: product.subcategory
   };
   
   return enhancedProduct;

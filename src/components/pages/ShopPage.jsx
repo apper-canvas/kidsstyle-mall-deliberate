@@ -12,10 +12,10 @@ const ShopPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Products");
+  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-
   const loadProducts = async () => {
     try {
       setLoading(true);
@@ -35,11 +35,15 @@ const ShopPage = () => {
     loadProducts();
   }, []);
 
-  useEffect(() => {
+useEffect(() => {
     let filtered = [...products];
 
     if (selectedCategory !== "All Products") {
       filtered = filtered.filter((p) => p.category === selectedCategory);
+      
+      if (selectedSubcategory) {
+        filtered = filtered.filter((p) => p.subcategory === selectedSubcategory);
+      }
     }
 
     if (searchQuery) {
@@ -48,13 +52,13 @@ const ShopPage = () => {
         (p) =>
           p.title.toLowerCase().includes(query) ||
           p.category.toLowerCase().includes(query) ||
-          p.description.toLowerCase().includes(query)
+          p.description.toLowerCase().includes(query) ||
+          (p.subcategory && p.subcategory.toLowerCase().includes(query))
       );
     }
 
     setFilteredProducts(filtered);
-  }, [selectedCategory, searchQuery, products]);
-
+  }, [selectedCategory, selectedSubcategory, searchQuery, products]);
   const handleAddToCart = (product) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find(
@@ -99,8 +103,15 @@ const ShopPage = () => {
     toast.info("Item removed from cart");
   };
 
-  const handleCategoryChange = (category) => {
+const handleCategoryChange = (category) => {
     setSelectedCategory(category);
+    setSelectedSubcategory(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleSubcategoryChange = (category, subcategory) => {
+    setSelectedCategory(category);
+    setSelectedSubcategory(subcategory);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -108,8 +119,9 @@ const ShopPage = () => {
     setSearchQuery(query);
   };
 
-  const handleClearFilters = () => {
+const handleClearFilters = () => {
     setSelectedCategory("All Products");
+    setSelectedSubcategory(null);
     setSearchQuery("");
   };
 
@@ -125,17 +137,21 @@ const ShopPage = () => {
 
       <main className="pt-20 sm:pt-24 md:pt-28 pb-8">
         <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
-          <CategorySidebar
+<CategorySidebar
             products={products}
             selectedCategory={selectedCategory}
+            selectedSubcategory={selectedSubcategory}
             onCategoryChange={handleCategoryChange}
+            onSubcategoryChange={handleSubcategoryChange}
           />
 
           <div className="lg:flex lg:gap-8">
-            <CategorySidebar
+<CategorySidebar
               products={products}
               selectedCategory={selectedCategory}
+              selectedSubcategory={selectedSubcategory}
               onCategoryChange={handleCategoryChange}
+              onSubcategoryChange={handleSubcategoryChange}
             />
 
             <div className="flex-1 min-w-0">
