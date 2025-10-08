@@ -12,11 +12,11 @@ const ProductGrid = ({ products, loading, error, onAddToCart, onRetry }) => {
     return <Error message={error} onRetry={onRetry} />;
   }
 
-  if (!products || products.length === 0) {
+if (!products || products.length === 0) {
     return (
       <Empty
         title="No Products Found"
-        message="Try adjusting your search or browse different categories to find what you're looking for."
+        message="We couldn't find any products matching your search. Try using different keywords, checking your spelling, or browse our categories to discover great products."
         actionLabel="Clear Filters"
         onAction={onRetry}
       />
