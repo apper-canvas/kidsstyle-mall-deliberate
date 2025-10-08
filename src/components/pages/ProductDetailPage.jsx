@@ -1,14 +1,15 @@
-import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
+import { useCart } from "@/App";
 import ApperIcon from "@/components/ApperIcon";
-import Button from "@/components/atoms/Button";
-import Badge from "@/components/atoms/Badge";
-import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
-import productService from "@/services/api/productService";
+import Loading from "@/components/ui/Loading";
+import Badge from "@/components/atoms/Badge";
+import Button from "@/components/atoms/Button";
 import { cn } from "@/utils/cn";
+import productService from "@/services/api/productService";
 
 function ProductDetailPage() {
   const { id } = useParams();
@@ -46,6 +47,9 @@ function ProductDetailPage() {
     }
   }
 
+
+  const { addToCart } = useCart();
+
   function handleAddToCart() {
     if (!product.inStock) return;
     
@@ -53,6 +57,14 @@ function ProductDetailPage() {
       toast.error("Please select a size");
       return;
     }
+
+    addToCart({
+      productId: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.image,
+      quantity: quantity
+    });
 
     setIsAdded(true);
     toast.success(`${product.title} added to cart!`);

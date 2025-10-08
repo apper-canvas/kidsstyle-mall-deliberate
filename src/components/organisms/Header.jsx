@@ -2,7 +2,11 @@ import { Link } from "react-router-dom";
 import ApperIcon from "@/components/ApperIcon";
 import SearchBar from "@/components/molecules/SearchBar";
 import Badge from "@/components/atoms/Badge";
-const Header = ({ onSearch, cartItemCount, onOpenCart }) => {
+import { useCart } from "@/App";
+
+const Header = ({ onSearch, onOpenCart }) => {
+  const { totalItems } = useCart();
+  
   return (
     <header className="fixed top-0 left-0 right-0 bg-white shadow-md z-40">
       <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -35,9 +39,9 @@ const Header = ({ onSearch, cartItemCount, onOpenCart }) => {
               size={28}
               className="text-gray-700 group-hover:text-primary transition-colors"
             />
-            {cartItemCount > 0 && (
+            {totalItems > 0 && (
               <Badge className="absolute -top-1 -right-1 animate-bounce">
-                {cartItemCount}
+                {totalItems}
               </Badge>
             )}
           </button>

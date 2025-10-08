@@ -4,14 +4,17 @@ import Button from "@/components/atoms/Button";
 import CartItem from "@/components/molecules/CartItem";
 import Empty from "@/components/ui/Empty";
 
-const CartPanel = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem }) => {
+import { useCart } from "@/App";
+
+const CartPanel = ({ isOpen, onClose }) => {
+  const { cartItems, updateQuantity, removeFromCart } = useCart();
+  
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
 
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -62,12 +65,12 @@ const CartPanel = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem 
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {cartItems.map((item) => (
+{cartItems.map((item) => (
                     <CartItem
                       key={item.productId}
                       item={item}
-                      onUpdateQuantity={onUpdateQuantity}
-                      onRemove={onRemoveItem}
+                      onUpdateQuantity={updateQuantity}
+                      onRemove={removeFromCart}
                     />
                   ))}
                 </div>
