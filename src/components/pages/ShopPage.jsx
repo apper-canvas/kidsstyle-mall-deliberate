@@ -12,8 +12,9 @@ function ShopPage() {
   const { addToCart, recentlyViewed } = useCart();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isCartOpen, setIsCartOpen] = useState(false);
 
@@ -35,10 +36,22 @@ function ShopPage() {
     }
   }
 
-const filteredProducts = products.filter((product) => {
+const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    setSelectedSubcategory(null);
+  };
+
+  const handleSubcategoryChange = (categoryName, subcategory) => {
+    setSelectedCategory(categoryName);
+    setSelectedSubcategory(subcategory);
+  };
+
+  const filteredProducts = products.filter((product) => {
     const matchesCategory =
       selectedCategory === "All" || 
-      (selectedCategory === "Flash Sales" ? product.salePrice : product.category === selectedCategory);
+      (selectedCategory === "Flash Sales" ? product.salePrice : 
+       selectedSubcategory ? product.subcategory === selectedSubcategory : 
+       product.category === selectedCategory);
     const matchesSearch =
       searchQuery === "" ||
       product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -56,10 +69,13 @@ const filteredProducts = products.filter((product) => {
 <div className="pt-20 sm:pt-24">
         <DailyDeals products={products} onAddToCart={addToCart} />
         <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex gap-6">
+<div className="flex gap-6">
             <CategorySidebar
+              products={products}
               selectedCategory={selectedCategory}
-              onSelectCategory={setSelectedCategory}
+              selectedSubcategory={selectedSubcategory}
+              onCategoryChange={handleCategoryChange}
+              onSubcategoryChange={handleSubcategoryChange}
             />
             <ProductGrid
               products={filteredProducts}
