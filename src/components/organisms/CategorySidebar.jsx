@@ -40,7 +40,7 @@ const CategorySidebar = ({ products, categories, categoriesLoading, selectedCate
     
     return categoryCounts[categoryName] || 0;
   };
-  const handleCategoryClick = (category) => {
+const handleCategoryClick = (category) => {
     if (category.subcategories) {
       if (expandedCategory === category.name) {
         setExpandedCategory(null);

@@ -65,10 +65,10 @@ const handleCategoryChange = (category) => {
     setSelectedSubcategory(subcategory);
   };
 
-  const filteredProducts = products.filter((product) => {
+const filteredProducts = products.filter((product) => {
     const matchesCategory =
       selectedCategory === "All" || 
-      (selectedCategory === "Flash Sales" ? product.salePrice : 
+      (selectedCategory === "Flash Sales" ? !!product.salePrice : 
        selectedSubcategory ? product.subcategory === selectedSubcategory : 
        product.category === selectedCategory);
     const matchesSearch =
