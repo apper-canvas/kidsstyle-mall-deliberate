@@ -88,9 +88,9 @@ return (
                   categories.map((category) => (
                     <div key={category.id}>
                       {category.subcategories && category.subcategories.length > 0 ? (
-                        <div className="group relative">
+<div className="group relative">
                           <Link
-                            to={`/?category=${category.id}`}
+                            to={`/?category=${category.name}`}
                             className="flex items-center gap-3 px-4 py-3 hover:bg-secondary/10 transition-colors"
                             onClick={() => setIsDropdownOpen(false)}
                           >
@@ -101,12 +101,12 @@ return (
                           {/* Subcategories */}
                           <div className="hidden group-hover:block absolute left-full top-0 ml-1 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2">
                             {category.subcategories.map((sub) => (
-                              <Link
-                                key={sub.id}
-                                to={`/?category=${category.id}&subcategory=${sub.id}`}
-                                className="flex items-center gap-3 px-4 py-2 hover:bg-secondary/10 transition-colors"
-                                onClick={() => setIsDropdownOpen(false)}
-                              >
+<Link
+                               key={sub.id}
+                               to={`/?category=${category.name}&subcategory=${sub.name}`}
+                               className="flex items-center gap-3 px-4 py-2 hover:bg-secondary/10 transition-colors"
+                               onClick={() => setIsDropdownOpen(false)}
+                             >
                                 <ApperIcon name={sub.icon} size={18} className="text-secondary" />
                                 <span className="text-gray-700">{sub.name}</span>
                               </Link>
@@ -115,7 +115,7 @@ return (
                         </div>
 ) : (
                         <Link
-                          to={`/?category=${category.id}`}
+                          to={`/?category=${category.name}`}
                           className="flex items-center gap-3 px-4 py-3 hover:bg-secondary/10 transition-colors"
                           onClick={() => setIsDropdownOpen(false)}
                         >
@@ -182,23 +182,23 @@ return (
                   <div className="px-4 py-8 text-center text-gray-500">No categories available</div>
 ) : (
                   categories.map((category) => (
-                    <div key={category.id} className="border-b border-gray-100 last:border-0">
-                      <Link
-                        to={`/?category=${category.id}`}
-                        className="flex items-center gap-3 px-4 py-4 hover:bg-secondary/10 transition-colors"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
+<div key={category.id} className="border-b border-gray-100 last:border-0">
+                       <Link
+                         to={`/?category=${category.name}`}
+                         className="flex items-center gap-3 px-4 py-4 hover:bg-secondary/10 transition-colors"
+                         onClick={() => setIsMobileMenuOpen(false)}
+                       >
                         <ApperIcon name={category.icon} size={24} className="text-primary" />
                         <span className="font-medium text-gray-700 text-lg">{category.name}</span>
                       </Link>
                       <div className="bg-gray-50 pl-8">
-                        {category.subcategories.map((sub) => (
-                          <Link
-                            key={sub.id}
-                            to={`/?category=${category.id}&subcategory=${sub.id}`}
-                            className="flex items-center gap-3 px-4 py-3 hover:bg-secondary/10 transition-colors"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                          >
+{category.subcategories.map((sub) => (
+                           <Link
+                             key={sub.id}
+                             to={`/?category=${category.name}&subcategory=${sub.name}`}
+                             className="flex items-center gap-3 px-4 py-3 hover:bg-secondary/10 transition-colors"
+                             onClick={() => setIsMobileMenuOpen(false)}
+                           >
                             <ApperIcon name={sub.icon} size={20} className="text-secondary" />
                             <span className="text-gray-600">{sub.name}</span>
 </Link>

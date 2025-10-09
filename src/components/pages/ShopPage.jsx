@@ -27,6 +27,42 @@ useEffect(() => {
     loadCategories();
   }, []);
 
+  // Handle URL parameters for category filtering
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryParam = urlParams.get('category');
+    const subcategoryParam = urlParams.get('subcategory');
+    
+    if (categoryParam) {
+      setSelectedCategory(categoryParam);
+      if (subcategoryParam) {
+        setSelectedSubcategory(subcategoryParam);
+      } else {
+        setSelectedSubcategory(null);
+      }
+    }
+  }, []);
+
+  // Listen for URL changes to update filters
+  useEffect(() => {
+    const handlePopState = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const categoryParam = urlParams.get('category');
+      const subcategoryParam = urlParams.get('subcategory');
+      
+      if (categoryParam) {
+        setSelectedCategory(categoryParam);
+        setSelectedSubcategory(subcategoryParam);
+      } else {
+        setSelectedCategory("All");
+        setSelectedSubcategory(null);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   const loadCategories = async () => {
     try {
       setCategoriesLoading(true);
