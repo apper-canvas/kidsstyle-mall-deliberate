@@ -1,12 +1,5 @@
 [
   {
-    "Id": 1,
-    "id": "all",
-    "name": "All Products",
-    "icon": "Grid3x3",
-    "subcategories": []
-  },
-  {
     "Id": 2,
     "id": "flash-sales",
     "name": "Flash Sales",

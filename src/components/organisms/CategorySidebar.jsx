@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
-import categoryService from "@/services/api/categoryService";
 import ApperIcon from "@/components/ApperIcon";
 import CategoryButton from "@/components/molecules/CategoryButton";
 import Loading from "@/components/ui/Loading";
 import { cn } from "@/utils/cn";
+import categoryService from "@/services/api/categoryService";
 
 const CategorySidebar = ({ products, categories, categoriesLoading, selectedCategory, selectedSubcategory, onCategoryChange, onSubcategoryChange }) => {
   const [categoryCounts, setCategoryCounts] = useState({});
   const [expandedCategory, setExpandedCategory] = useState(null);
-useEffect(() => {
+  
+  useEffect(() => {
     const counts = {};
     const subcategoryCounts = {};
     
@@ -26,14 +27,10 @@ useEffect(() => {
     
     setCategoryCounts({ ...counts, ...subcategoryCounts });
   }, [products]);
-  
+
   const getCategoryCount = (categoryName, subcategory = null) => {
-    if (categoryName === "All Products") {
-      return products?.length || 0;
-    }
-    
-    if (categoryName === "Flash Sales") {
-      return products?.filter(p => p.salePrice).length || 0;
+    if (!products || products.length === 0) {
+      return 0;
     }
     
     if (subcategory) {
@@ -43,7 +40,6 @@ useEffect(() => {
     
     return categoryCounts[categoryName] || 0;
   };
-
   const handleCategoryClick = (category) => {
     if (category.subcategories) {
       if (expandedCategory === category.name) {
