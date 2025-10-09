@@ -130,12 +130,16 @@ return (
           </div>
         )}
         
-        <div className="flex flex-col lg:flex-row gap-6">
+<div className="flex flex-col lg:flex-row gap-6">
           <aside className="lg:w-64 flex-shrink-0">
             <CategorySidebar
+              products={products}
               categories={categories}
-              loading={categoriesLoading}
+              categoriesLoading={categoriesLoading}
+              selectedCategory={categoryId}
+              selectedSubcategory={subcategoryId}
               onCategoryChange={handleCategoryChange}
+              onSubcategoryChange={handleSubcategoryChange}
             />
           </aside>
           
