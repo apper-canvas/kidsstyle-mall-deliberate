@@ -1,32 +1,18 @@
 import productsData from "@/services/mockData/products.json";
+import React from "react";
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const getSizeRecommendation = (product) => {
-  if (product?.sizeRecommendation) {
+  if (product.category !== "Kids Clothing") return undefined;
+  
+  // Return size recommendation from product data if available
+  if (product.sizeRecommendation) {
     return product.sizeRecommendation;
   }
   
   // Default recommendation if not specified
   return "Fits true to size";
-};
-
-const getAll = async (filters = {}) => {
-  await delay(300);
-  let filteredProducts = [...productsData];
-if (filters.categoryId) {
-    filteredProducts = filteredProducts.filter(
-      product => product.categoryId === filters.categoryId
-    );
-    
-    if (filters.subcategoryId) {
-      filteredProducts = filteredProducts.filter(
-        product => product.subcategoryId === filters.subcategoryId
-      );
-    }
-  }
-  
-  return filteredProducts;
 };
 
 const enhanceProductData = (product) => {
@@ -43,8 +29,8 @@ const enhanceProductData = (product) => {
     stockStatus = 'low-stock';
   }
   
-const enhancedProduct = {
-    ...product,
+  const enhancedProduct = {
+...product,
     images: [
       baseImage,                                    // Main front view
       baseImage.replace('.jpg', '-2.jpg'),         // Side angle
@@ -114,7 +100,7 @@ getByCategory: async (category) => {
       .filter(
         (item) =>
 item.title.toLowerCase().includes(searchTerm) ||
-          item.category.toLowerCase().includes(searchTerm) ||
+        item.category.toLowerCase().includes(searchTerm) ||
         item.description.toLowerCase().includes(searchTerm)
       )
       .map(enhanceProductData);
@@ -156,6 +142,7 @@ item.title.toLowerCase().includes(searchTerm) ||
       .filter(Boolean)
       .slice(0, limit)
 .map(enhanceProductData);
+
     // If we don't have enough complementary products, fill with random from different categories
     if (complementary.length < limit) {
       const priceMin = currentProduct?.price ? currentProduct.price * 0.8 : 0;
