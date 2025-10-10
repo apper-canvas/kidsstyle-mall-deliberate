@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useCart } from "@/App";
 import DailyDeals from "@/components/organisms/DailyDeals";
-import CategorySidebar from "@/components/organisms/CategorySidebar";
 import CartPanel from "@/components/organisms/CartPanel";
 import Header from "@/components/organisms/Header";
 import ProductGrid from "@/components/organisms/ProductGrid";
@@ -11,72 +10,23 @@ import productService from "@/services/api/productService";
 import categoryService from "@/services/api/categoryService";
 function ShopPage() {
   const { addToCart, recentlyViewed } = useCart();
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [categoriesLoading, setCategoriesLoading] = useState(true);
-  const [categoriesError, setCategoriesError] = useState(null);
+const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-const [error, setError] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
 
-useEffect(() => {
+  useEffect(() => {
     loadProducts();
     loadCategories();
   }, []);
 
   // Handle URL parameters for category filtering
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const categoryParam = urlParams.get('category');
-    const subcategoryParam = urlParams.get('subcategory');
-    
-    if (categoryParam) {
-      setSelectedCategory(categoryParam);
-      if (subcategoryParam) {
-        setSelectedSubcategory(subcategoryParam);
-      } else {
-        setSelectedSubcategory(null);
-      }
-    }
-  }, []);
 
   // Listen for URL changes to update filters
-  useEffect(() => {
-    const handlePopState = () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const categoryParam = urlParams.get('category');
-      const subcategoryParam = urlParams.get('subcategory');
-      
-      if (categoryParam) {
-        setSelectedCategory(categoryParam);
-        setSelectedSubcategory(subcategoryParam);
-      } else {
-        setSelectedCategory("All");
-        setSelectedSubcategory(null);
-      }
-    };
 
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
-  const loadCategories = async () => {
-    try {
-      setCategoriesLoading(true);
-      setCategoriesError(null);
-      const data = await categoryService.getAll();
-      setCategories(data);
-    } catch (error) {
-      console.error("Failed to load categories:", error);
-      setCategoriesError(error.message);
-      toast.error("Failed to load categories");
-    } finally {
-      setCategoriesLoading(false);
-    }
-  };
 
   async function loadProducts() {
     try {
@@ -90,28 +40,27 @@ useEffect(() => {
     } finally {
       setLoading(false);
     }
+}
+
+  async function loadCategories() {
+    try {
+      setCategoriesLoading(true);
+      const data = await categoryService.getAll();
+      setCategories(data);
+    } catch (err) {
+      console.error("Failed to load categories:", err);
+      toast.error("Failed to load categories");
+    } finally {
+      setCategoriesLoading(false);
+    }
   }
-const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-    setSelectedSubcategory(null);
-  };
 
-  const handleSubcategoryChange = (categoryName, subcategory) => {
-    setSelectedCategory(categoryName);
-    setSelectedSubcategory(subcategory);
-  };
-
-const filteredProducts = products.filter((product) => {
-    const matchesCategory =
-      selectedCategory === "All" || 
-      (selectedCategory === "Flash Sales" ? !!product.salePrice : 
-       selectedSubcategory ? product.subcategory === selectedSubcategory : 
-       product.category === selectedCategory);
+  const filteredProducts = products.filter((product) => {
     const matchesSearch =
       searchQuery === "" ||
       product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    return matchesSearch;
   });
 
   return (
@@ -126,16 +75,7 @@ const filteredProducts = products.filter((product) => {
 <div className="pt-20 sm:pt-24">
         <DailyDeals products={products} onAddToCart={addToCart} />
         <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
-<div className="flex gap-6">
-          <CategorySidebar
-            products={products}
-            categories={categories}
-            categoriesLoading={categoriesLoading}
-            selectedCategory={selectedCategory}
-            selectedSubcategory={selectedSubcategory}
-            onCategoryChange={handleCategoryChange}
-            onSubcategoryChange={handleSubcategoryChange}
-          />
+<div className="w-full">
             <ProductGrid
               products={filteredProducts}
               loading={loading}
