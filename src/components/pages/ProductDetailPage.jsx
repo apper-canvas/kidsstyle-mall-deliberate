@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useCart } from "@/App";
 import RecentlyViewed from "@/components/organisms/RecentlyViewed";
 import ProductRecommendations from "@/components/organisms/ProductRecommendations";
+import Header from "@/components/organisms/Header";
 import ApperIcon from "@/components/ApperIcon";
 import Error from "@/components/ui/Error";
 import Loading from "@/components/ui/Loading";
@@ -14,6 +15,7 @@ import SizeGuideModal from "@/components/atoms/SizeGuideModal";
 import ImageGalleryModal from "@/components/atoms/ImageGalleryModal";
 import { cn } from "@/utils/cn";
 import productService from "@/services/api/productService";
+import categoryService from "@/services/api/categoryService";
 function ProductDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -28,9 +30,13 @@ const [selectedImage, setSelectedImage] = useState(0);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [complementaryProducts, setComplementaryProducts] = useState([]);
-  useEffect(() => {
+  const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+useEffect(() => {
 loadProduct();
     loadRecommendations();
+    loadCategories();
   }, [id]);
 
   const { trackProductView, recentlyViewed } = useCart();
@@ -79,9 +85,29 @@ async function loadProduct() {
       console.error("Error loading recommendations:", err);
       // Don't show error to user - recommendations are optional
     }
+}
+
+  async function loadCategories() {
+    try {
+      setCategoriesLoading(true);
+      const data = await categoryService.getAll();
+      setCategories(data);
+    } catch (err) {
+      console.error("Error loading categories:", err);
+      // Don't show error to user - categories are optional for header
+    } finally {
+      setCategoriesLoading(false);
+    }
   }
 
+  const handleSearch = (searchTerm) => {
+    // Navigate to shop page with search parameter
+    navigate(`/?search=${encodeURIComponent(searchTerm)}`);
+  };
 
+  const handleOpenCart = () => {
+    setIsCartOpen(true);
+  };
   const { addToCart } = useCart();
 
 function handleAddToCart() {
@@ -171,9 +197,16 @@ const newQuantity = quantity + change;
     );
   }
 
-  return (
-    <div className="min-h-screen pt-20 pb-8 px-4 sm:px-6 lg:px-8 bg-background">
-      <div className="max-w-7xl mx-auto">
+return (
+    <>
+      <Header 
+        onSearch={handleSearch}
+        onOpenCart={handleOpenCart}
+        categories={categories}
+        categoriesLoading={categoriesLoading}
+      />
+      <div className="min-h-screen pt-20 pb-8 px-4 sm:px-6 lg:px-8 bg-background">
+        <div className="max-w-7xl mx-auto">
         {/* Breadcrumb Navigation */}
         <nav className="flex items-center gap-2 text-sm mb-6">
           <Link
@@ -531,8 +564,9 @@ const newQuantity = quantity + change;
             onAddToCart={addToCart}
           />
         </div>
+</div>
       </div>
-    </div>
+    </>
   );
 }
 
